@@ -1,0 +1,2323 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NUMBER BLOCKS ADVENTURE: Roblox Math Quest</title>
+  
+  <!-- MediaPipe Pose via reliable CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Lilita+One&display=swap');
+
+    :root {
+      --primary: #0088FF;
+      --gold: #FFD124;
+      --green: #00D26A;
+      --red: #FF385C;
+      --card-bg: #1A2238;
+      --border: #3A4C74;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      background: #090D16;
+      font-family: 'Fredoka', cursive, sans-serif;
+      color: #FFFFFF;
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Fixed 16:9 Viewport Stage */
+    #game-container {
+      position: relative;
+      width: 1280px;
+      height: 720px;
+      background: #111726;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 0 50px rgba(0, 136, 255, 0.35);
+      display: flex;
+      flex-direction: column;
+      transform-origin: center center;
+    }
+
+    /* Background Canvas */
+    #world-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1280px;
+      height: 720px;
+      z-index: 1;
+    }
+
+    /* Top HUD Header */
+    #hud {
+      position: absolute;
+      top: 12px;
+      left: 20px;
+      right: 20px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 20;
+      pointer-events: none;
+    }
+
+    .hud-card {
+      background: rgba(18, 25, 42, 0.92);
+      border: 3px solid var(--border);
+      box-shadow: 0 6px 0 #0d121f;
+      border-radius: 16px;
+      padding: 8px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      pointer-events: auto;
+      backdrop-filter: blur(6px);
+    }
+
+    .lvl-label {
+      font-family: 'Lilita One', cursive;
+      font-size: 26px;
+      color: var(--gold);
+      text-shadow: 2px 2px 0 #000;
+      letter-spacing: 0.5px;
+    }
+
+    .progress-track {
+      display: flex;
+      gap: 6px;
+    }
+    .p-block {
+      width: 24px;
+      height: 18px;
+      border-radius: 6px;
+      background: #25314d;
+      border: 2px solid #3c4f79;
+      transition: all 0.3s;
+    }
+    .p-block.done {
+      background: var(--green);
+      border-color: #8cffc7;
+      box-shadow: 0 0 10px rgba(0, 210, 106, 0.7);
+    }
+    .p-block.active {
+      background: var(--gold);
+      border-color: #fff;
+      transform: scale(1.15);
+    }
+
+    /* Timer Display in HUD */
+    .timer-card {
+      background: rgba(18, 25, 42, 0.95);
+      border: 3px solid var(--gold);
+      box-shadow: 0 6px 0 #0d121f;
+      border-radius: 16px;
+      padding: 6px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      pointer-events: auto;
+    }
+    .timer-icon {
+      font-size: 24px;
+      animation: pulseClock 1s infinite alternate;
+    }
+    @keyframes pulseClock {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.15); }
+    }
+    .timer-num {
+      font-family: 'Lilita One', cursive;
+      font-size: 32px;
+      color: var(--gold);
+      letter-spacing: 1px;
+      min-width: 48px;
+      text-align: center;
+    }
+    .timer-card.danger {
+      border-color: var(--red);
+      background: rgba(45, 12, 22, 0.95);
+    }
+    .timer-card.danger .timer-num {
+      color: var(--red);
+    }
+
+    .hud-txt {
+      font-family: 'Lilita One', cursive;
+      font-size: 24px;
+      color: #fff;
+      text-shadow: 2px 2px 0 #000;
+    }
+    .score-hl {
+      color: var(--gold);
+      font-size: 28px;
+    }
+
+    .crystal-badge {
+      font-family: 'Lilita One', cursive;
+      font-size: 22px;
+      color: #7ce7ff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hud-btn {
+      background: #232e47;
+      border: 2px solid #4a5f8f;
+      color: #fff;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #101624;
+      pointer-events: auto;
+    }
+    .hud-btn:active {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 #101624;
+    }
+
+    /* Lock Indicator Pill in Top Center (Non-intrusive) */
+    #lock-hud-pill {
+      position: absolute;
+      top: 88px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-10px);
+      background: rgba(14, 20, 36, 0.95);
+      border: 3px solid var(--gold);
+      box-shadow: 0 6px 20px rgba(255, 209, 36, 0.4);
+      border-radius: 30px;
+      padding: 6px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 25;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    #lock-hud-pill.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    .lock-pill-txt {
+      font-family: 'Lilita One', cursive;
+      font-size: 18px;
+      color: #FFF;
+      letter-spacing: 0.5px;
+    }
+    .lock-pill-badge {
+      background: var(--gold);
+      color: #101524;
+      font-family: 'Lilita One', cursive;
+      font-size: 20px;
+      border-radius: 10px;
+      padding: 2px 10px;
+    }
+
+    /* Quiz Container */
+    #quiz-board {
+      position: absolute;
+      top: 130px;
+      left: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 15;
+      pointer-events: none;
+    }
+
+    .q-box {
+      width: 960px;
+      background: linear-gradient(180deg, rgba(26, 35, 58, 0.96) 0%, rgba(15, 20, 36, 0.98) 100%);
+      border: 4px solid #4b6294;
+      border-radius: 22px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+      padding: 18px 30px;
+      text-align: center;
+      pointer-events: auto;
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .q-badge {
+      position: absolute;
+      top: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(90deg, #0088FF, #00B4D8);
+      color: #fff;
+      font-family: 'Lilita One', cursive;
+      font-size: 15px;
+      letter-spacing: 1px;
+      padding: 4px 20px;
+      border-radius: 20px;
+      border: 2px solid #fff;
+      box-shadow: 0 4px 10px rgba(0, 136, 255, 0.5);
+    }
+
+    .q-main {
+      font-family: 'Lilita One', cursive;
+      font-size: 30px;
+      color: #ffffff;
+      margin-top: 6px;
+      line-height: 1.35;
+      text-shadow: 2px 3px 0 #0c111c;
+    }
+
+    .q-desc {
+      font-size: 16px;
+      font-weight: 600;
+      color: #c7d8ff;
+      margin-top: 4px;
+    }
+
+    /* Choice Grid */
+    .choices-grid-4 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px 26px;
+      width: 1040px;
+      pointer-events: auto;
+    }
+
+    .choices-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      width: 980px;
+      margin-top: 14px;
+      pointer-events: auto;
+    }
+
+    .choice-card {
+      background: linear-gradient(180deg, #222c44 0%, #161c2d 100%);
+      border: 4px solid #3c4e77;
+      border-radius: 20px;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 8px 0 #0d121f, 0 10px 20px rgba(0,0,0,0.4);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.15s, border-color 0.2s, background 0.2s;
+    }
+
+    .choice-card:hover {
+      transform: translateY(-2px);
+      border-color: #00a2ff;
+    }
+
+    .choice-card.holding {
+      border-color: var(--gold);
+      background: linear-gradient(180deg, #384973 0%, #212c47 100%);
+      transform: scale(1.03);
+      box-shadow: 0 10px 0 #0d121f, 0 0 25px rgba(255, 209, 36, 0.6);
+    }
+
+    .choice-card.correct {
+      border-color: var(--green) !important;
+      background: linear-gradient(180deg, #1b633d 0%, #113f27 100%) !important;
+      box-shadow: 0 0 35px rgba(0,210,106,0.9) !important;
+    }
+
+    .choice-card.wrong {
+      border-color: var(--red) !important;
+      background: linear-gradient(180deg, #631b2c 0%, #3f111c 100%) !important;
+      box-shadow: 0 0 30px rgba(255,56,92,0.8) !important;
+    }
+
+    .choice-key {
+      width: 50px;
+      height: 50px;
+      min-width: 50px;
+      border-radius: 14px;
+      color: #fff;
+      font-family: 'Lilita One', cursive;
+      font-size: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
+    }
+
+    .choice-card[data-key="A"] .choice-key { background: #FF385C; box-shadow: 0 4px 0 #9c1f35; }
+    .choice-card[data-key="B"] .choice-key { background: #0088FF; box-shadow: 0 4px 0 #005bb5; }
+    .choice-card[data-key="C"] .choice-key { background: #00D26A; box-shadow: 0 4px 0 #008e47; }
+    .choice-card[data-key="D"] .choice-key { background: #FF9F1C; box-shadow: 0 4px 0 #b36700; }
+
+    .choice-text-box {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .choice-text {
+      font-size: 22px;
+      font-weight: 700;
+      color: #FFFFFF;
+      line-height: 1.25;
+      text-shadow: 1px 2px 0 #080b12;
+    }
+
+    .choice-hint {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0,0,0,0.4);
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #FFE600;
+      width: fit-content;
+      margin-top: 4px;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+
+    .fill-meter {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      height: 8px;
+      width: 0%;
+      background: linear-gradient(90deg, #FFD124, #00FF88);
+      box-shadow: 0 0 10px #FFD124;
+      transition: width 0.08s linear;
+    }
+
+    /* Feedback Overlay */
+    #toast-feedback {
+      position: absolute;
+      top: 45%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      background: rgba(16, 23, 40, 0.96);
+      border: 4px solid var(--green);
+      border-radius: 24px;
+      padding: 20px 40px;
+      font-family: 'Lilita One', cursive;
+      font-size: 44px;
+      color: #FFF;
+      text-shadow: 2px 2px 0 #000;
+      z-index: 50;
+      pointer-events: none;
+      box-shadow: 0 0 35px rgba(0,210,106,0.6);
+      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    #toast-feedback.show {
+      transform: translate(-50%, -50%) scale(1);
+    }
+    #toast-feedback.wrong {
+      border-color: var(--red);
+      box-shadow: 0 0 35px rgba(255,56,92,0.6);
+    }
+
+    /* Numi Dialog */
+    #numi-bar {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(14, 21, 38, 0.94);
+      border: 3px solid #00D2FF;
+      border-radius: 20px;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      max-width: 460px;
+      box-shadow: 0 6px 20px rgba(0,210,255,0.3);
+      z-index: 30;
+      pointer-events: none;
+    }
+    .numi-avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: radial-gradient(circle, #00e5ff 0%, #005bb5 100%);
+      border: 2px solid #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+
+    /* Webcam Mini PIP with Single Player Tracker */
+    #webcam-view {
+      position: absolute;
+      bottom: 16px;
+      right: 20px;
+      width: 176px;
+      height: 124px;
+      background: #0f1422;
+      border: 3px solid #0088FF;
+      border-radius: 16px;
+      overflow: hidden;
+      z-index: 35;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.6);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    #webcam-elem {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scaleX(-1);
+      opacity: 0.85;
+    }
+    #cam-canvas {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      transform: scaleX(-1);
+      pointer-events: none;
+    }
+    .cam-tag {
+      position: absolute;
+      bottom: 4px;
+      left: 4px;
+      right: 4px;
+      background: rgba(10, 15, 25, 0.85);
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      text-align: center;
+      padding: 2px;
+      color: #92b5ff;
+      z-index: 40;
+    }
+
+    /* Keyboard Mode Info */
+    #kb-guide {
+      position: absolute;
+      bottom: 22px;
+      left: 500px;
+      background: rgba(14, 20, 34, 0.85);
+      border: 2px solid #3d4f7c;
+      border-radius: 12px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #92abdd;
+      z-index: 25;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .kb-badge {
+      background: #273454;
+      border: 1px solid #576d9e;
+      border-radius: 6px;
+      padding: 2px 6px;
+      color: #fff;
+      font-weight: 700;
+      font-size: 11px;
+    }
+
+    /* Modal Layer */
+    .screen-layer {
+      position: absolute;
+      inset: 0;
+      background: rgba(8, 11, 18, 0.94);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .modal-box {
+      background: linear-gradient(180deg, #242c44 0%, #151a2a 100%);
+      border: 5px solid #485b88;
+      border-radius: 28px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.7);
+      padding: 32px 44px;
+      max-width: 840px;
+      width: 90%;
+      position: relative;
+    }
+
+    .main-logo {
+      font-family: 'Lilita One', cursive;
+      font-size: 54px;
+      color: var(--gold);
+      line-height: 1.1;
+      text-shadow: 4px 5px 0 #0c1220, 0 0 30px rgba(255, 209, 36, 0.5);
+      letter-spacing: 1.5px;
+    }
+
+    .main-sub {
+      font-family: 'Lilita One', cursive;
+      font-size: 22px;
+      color: #00D2FF;
+      margin-top: 6px;
+      margin-bottom: 24px;
+      letter-spacing: 2px;
+      text-shadow: 2px 2px 0 #000;
+    }
+
+    .btn-column {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      width: 380px;
+      margin: 0 auto;
+    }
+
+    .btn-roblox {
+      font-family: 'Lilita One', cursive;
+      font-size: 24px;
+      letter-spacing: 1px;
+      color: #FFFFFF;
+      background: linear-gradient(180deg, #00A3FF 0%, #0066CC 100%);
+      border: none;
+      border-radius: 16px;
+      padding: 14px 24px;
+      cursor: pointer;
+      box-shadow: 0 8px 0 #004488, 0 12px 20px rgba(0,0,0,0.4);
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      text-shadow: 1px 2px 0 rgba(0,0,0,0.4);
+    }
+    .btn-roblox:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 0 #004488;
+    }
+    .btn-roblox:active {
+      transform: translateY(6px);
+      box-shadow: 0 2px 0 #004488;
+    }
+    .btn-roblox.yellow {
+      background: linear-gradient(180deg, #FFD124 0%, #D89E00 100%);
+      color: #201700;
+      box-shadow: 0 8px 0 #9E7400;
+      text-shadow: none;
+    }
+    .btn-roblox.green {
+      background: linear-gradient(180deg, #00E676 0%, #00A344 100%);
+      box-shadow: 0 8px 0 #00682b;
+    }
+    .btn-roblox.secondary {
+      background: linear-gradient(180deg, #3d4a6c 0%, #262f47 100%);
+      box-shadow: 0 6px 0 #171c2b;
+      font-size: 20px;
+      padding: 10px 20px;
+    }
+
+    /* Teacher Mode Panel */
+    #teacher-dialog {
+      position: absolute;
+      inset: 0;
+      background: rgba(6, 8, 14, 0.94);
+      z-index: 120;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .teacher-card {
+      background: #1b2234;
+      border: 4px solid #FF9F1C;
+      border-radius: 24px;
+      padding: 28px 36px;
+      max-width: 800px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      text-align: left;
+    }
+
+    #teacher-press-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 4px;
+      background: #FF9F1C;
+      width: 0%;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Game Stage (Fixed 16:9) -->
+  <div id="game-container">
+    
+    <!-- Roblox World Render Canvas -->
+    <canvas id="world-canvas" width="1280" height="720"></canvas>
+
+    <!-- Top HUD -->
+    <header id="hud">
+      <div class="hud-card">
+        <span class="lvl-label" id="hud-level-title">LEVEL 1</span>
+        <div class="progress-track" id="hud-progress-dots">
+          <div class="p-block active"></div>
+          <div class="p-block"></div>
+          <div class="p-block"></div>
+          <div class="p-block"></div>
+          <div class="p-block"></div>
+        </div>
+        <span id="hud-q-count" style="font-weight:700; font-size:16px; color:#A8C6FF; margin-left:4px;">1/5</span>
+      </div>
+
+      <!-- 30 Detik Timer di Atas Layar -->
+      <div class="timer-card" id="hud-timer-card">
+        <span class="timer-icon">⏱️</span>
+        <span class="timer-num" id="hud-timer-sec">30</span>
+      </div>
+
+      <div class="hud-card">
+        <div class="crystal-badge">
+          <span>💎</span>
+          <span id="hud-crystal-count">0/5</span>
+        </div>
+        <div class="hud-txt" style="margin-left:14px;">
+          SKOR: <span class="score-hl" id="hud-score">0</span>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:10px;">
+        <button class="hud-btn" id="btn-audio" title="Musik ON/OFF">🔊</button>
+        <button class="hud-btn" id="btn-fullscreen" title="Layar Penuh">⛶</button>
+        <button class="hud-btn" id="btn-teacher" title="Mode Guru (Tahan 3 Detik)" style="position:relative; overflow:hidden;">
+          ⚙️
+          <div id="teacher-press-bar"></div>
+        </button>
+      </div>
+    </header>
+
+    <!-- Lock In Indicator di Atas (Rapi & Tidak Menutupi Soal) -->
+    <div id="lock-hud-pill">
+      <span class="lock-pill-txt">Mengunci Jawaban:</span>
+      <span class="lock-pill-badge" id="lock-pill-letter">A</span>
+      <span style="font-family:'Lilita One'; font-size:18px; color:var(--gold);" id="lock-pill-countdown">(2s)</span>
+    </div>
+
+    <!-- Quiz Question & Options -->
+    <main id="quiz-board">
+      <div class="q-box">
+        <div class="q-badge" id="q-topic">MEMBACA & MENULIS BILANGAN CACAH</div>
+        <div class="q-main" id="q-text">Bilangan 24.315 dibaca ....</div>
+        <div class="q-desc" id="q-sub">Pilih jawaban dengan gerakan tubuh atau klik kartu pilihan!</div>
+      </div>
+
+      <div class="choices-grid-4" id="choices-box">
+        <!-- Injected via JS -->
+      </div>
+    </main>
+
+    <!-- Feedback Toast -->
+    <div id="toast-feedback">
+      <div id="fb-main">✅ AWESOME!</div>
+      <div style="font-family:'Fredoka'; font-size:18px; font-weight:600; color:#e2f1ff;" id="fb-sub">+150 Poin (Bonus Cepat!)</div>
+    </div>
+
+    <!-- NUMI Dialogue Bar -->
+    <div id="numi-bar">
+      <div class="numi-avatar">🤖</div>
+      <div style="font-size:16px; font-weight:600; color:#E2F1FF; line-height:1.35;" id="numi-speech">
+        “Hi, <strong>Math Explorer</strong>! NUMI sudah mengunci 1 pemain di depan kamera. Siap bergerak!”
+      </div>
+    </div>
+
+    <!-- Webcam Mini PIP -->
+    <div id="webcam-view">
+      <video id="webcam-elem" autoplay playsinline muted></video>
+      <canvas id="cam-canvas" width="176" height="124"></canvas>
+      <div class="cam-tag" id="cam-status">
+        ● 1 PEMAIN TERKUNCI
+      </div>
+    </div>
+
+    <!-- Keyboard Bar -->
+    <div id="kb-guide">
+      <span>⌨️ Keyboard Mode:</span>
+      <span class="kb-badge">⬅️ A</span>
+      <span class="kb-badge">Z: B (✋Kiri)</span>
+      <span class="kb-badge">M: C (🤚Kanan)</span>
+      <span class="kb-badge">➡️ D</span>
+    </div>
+
+    <!-- ==================== SCREENS ==================== -->
+
+    <!-- 1. Opening Screen -->
+    <div class="screen-layer" id="screen-start">
+      <div class="modal-box">
+        <h1 class="main-logo">NUMBER BLOCKS ADVENTURE</h1>
+        <div class="main-sub">ROBLOX MATH QUEST • MOVE • THINK • SOLVE • WIN!</div>
+
+        <div style="background:rgba(14,21,38,0.92); border:2px solid #00D2FF; border-radius:18px; padding:16px 20px; display:flex; align-items:center; gap:16px; margin-bottom:24px; text-align:left;">
+          <div class="numi-avatar">🤖</div>
+          <div style="font-size:17px; line-height:1.4; color:#E2F1FF;">
+            “Kumpulkan <strong>5 Math Crystals</strong> di 5 Dunia Roblox! Sensor pintar hanya akan <strong>mengunci 1 pemain utama</strong> di depan layar!”
+          </div>
+        </div>
+
+        <div class="btn-column">
+          <button class="btn-roblox yellow" id="btn-start-play">
+            ▶ MULAI PETUALANGAN
+          </button>
+          <button class="btn-roblox secondary" id="btn-open-tutorial">
+            📖 CARA BERMAIN
+          </button>
+          <button class="btn-roblox secondary" id="btn-open-map">
+            🏆 PENCAPAIAN
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Calibration Screen -->
+    <div class="screen-layer" id="screen-calib" style="display:none;">
+      <div class="modal-box">
+        <h2 style="font-family:'Lilita One'; font-size:38px; color:var(--gold); margin-bottom:6px;">KALIBRASI PEMAIN TUNGGAL</h2>
+        <p style="font-size:17px; color:#c6d8ff; margin-bottom:14px;">
+          Pastikan hanya 1 anak yang berdiri tepat di tengah kamera. Sensor akan mengunci posisimu!
+        </p>
+
+        <div style="width:300px; height:200px; border:4px dashed #00D2FF; border-radius:20px; margin:14px auto; display:flex; align-items:center; justify-content:center; background:rgba(0,136,255,0.1); font-size:80px;">
+          🧍
+        </div>
+
+        <div style="background:rgba(14,21,38,0.9); border:2px solid #00D2FF; border-radius:16px; padding:14px; margin:16px 0; font-size:18px; font-weight:700; color:#FFD124;" id="calib-txt">
+          “Angkat KEDUA TANGAN KE ATAS untuk mengunci dirimu sebagai pemain utama!”
+        </div>
+
+        <div style="display:flex; gap:14px; justify-content:center;">
+          <button class="btn-roblox green" id="btn-skip-calib">
+            ✓ SAYA SUDAH SIAP (LEWATI)
+          </button>
+          <button class="btn-roblox secondary" id="btn-cancel-calib">
+            ✕ KEMBALI
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Tutorial Screen -->
+    <div class="screen-layer" id="screen-tutorial" style="display:none;">
+      <div class="modal-box">
+        <h2 style="font-family:'Lilita One'; font-size:36px; color:#00E5FF; margin-bottom:6px;">CARA BERMAIN (TUTORIAL GERAK)</h2>
+        <p style="font-size:16px; color:#cbd9f7; margin-bottom:16px;">Tahan posisi gerakanmu selama 1 detik sampai indikator atas terkunci!</p>
+
+        <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; margin-bottom:18px;">
+          <div style="background:#1b253b; border:2px solid #3e507c; border-radius:14px; padding:12px 8px;">
+            <div style="font-size:32px;">⬅️</div>
+            <div style="font-family:'Lilita One'; font-size:17px; color:#FF385C;">PILIHAN A</div>
+            <div style="font-size:12px; color:#b0c6f5;">Melangkah / Condong KIRI</div>
+          </div>
+          <div style="background:#1b253b; border:2px solid #3e507c; border-radius:14px; padding:12px 8px;">
+            <div style="font-size:32px;">✋</div>
+            <div style="font-family:'Lilita One'; font-size:17px; color:#0088FF;">PILIHAN B</div>
+            <div style="font-size:12px; color:#b0c6f5;">Angkat Tangan KIRI</div>
+          </div>
+          <div style="background:#1b253b; border:2px solid #3e507c; border-radius:14px; padding:12px 8px;">
+            <div style="font-size:32px;">🤚</div>
+            <div style="font-family:'Lilita One'; font-size:17px; color:#00D26A;">PILIHAN C</div>
+            <div style="font-size:12px; color:#b0c6f5;">Angkat Tangan KANAN</div>
+          </div>
+          <div style="background:#1b253b; border:2px solid #3e507c; border-radius:14px; padding:12px 8px;">
+            <div style="font-size:32px;">➡️</div>
+            <div style="font-family:'Lilita One'; font-size:17px; color:#FF9F1C;">PILIHAN D</div>
+            <div style="font-size:12px; color:#b0c6f5;">Melangkah / Condong KANAN</div>
+          </div>
+        </div>
+
+        <div style="font-size:14px; color:#FFD124; margin-bottom:18px; font-weight:600;">
+          💡 Sensor telah dilengkapi penyaring otomatis: teman atau orang lain di belakang kamera tidak akan mengganggu sensor pemain utama!
+        </div>
+
+        <button class="btn-roblox yellow" id="btn-start-lvl1" style="margin:0 auto;">
+          ⚡ MULAI LEVEL 1: NUMBER CITY
+        </button>
+      </div>
+    </div>
+
+    <!-- 4. World Map Screen -->
+    <div class="screen-layer" id="screen-map" style="display:none;">
+      <div class="modal-box">
+        <h2 style="font-family:'Lilita One'; font-size:40px; color:var(--gold);">PETUALANGAN MATH QUEST</h2>
+        <p style="font-size:16px; color:#cad8f7;">Portal terbuka! Jelajahi 5 Dunia Bilangan Cacah.</p>
+
+        <div style="display:flex; align-items:center; justify-content:center; gap:16px; margin:24px 0;" id="map-nodes">
+          <!-- Populated by JS -->
+        </div>
+
+        <div style="background:rgba(14,21,38,0.9); border:2px solid #00D2FF; border-radius:16px; padding:14px; margin:16px 0; font-size:17px;" id="map-numi-text">
+          “Bagus sekali! Kristal berikutnya menanti di arena selanjutnya!”
+        </div>
+
+        <button class="btn-roblox green" id="btn-next-world" style="margin:0 auto;">
+          🚀 MASUK KE DUNIA BERIKUTNYA
+        </button>
+      </div>
+    </div>
+
+    <!-- 5. Victory Screen -->
+    <div class="screen-layer" id="screen-victory" style="display:none;">
+      <div class="modal-box">
+        <div style="font-size:48px; margin-bottom:6px;">🎉 CONGRATULATIONS! 🎉</div>
+        <h2 style="font-family:'Lilita One'; font-size:44px; color:#00E5FF; line-height:1.2;">
+          YOU ARE A NUMBER MASTER!
+        </h2>
+        <p style="font-size:17px; color:#cad8f7;">Semua 5 Math Crystal telah bergabung membuka Golden Portal Matematika!</p>
+
+        <div style="font-size:42px; margin:14px 0; letter-spacing:8px;">💎💎💎💎💎</div>
+
+        <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; margin:18px 0;">
+          <div style="background:#1c253b; padding:12px; border-radius:14px;">
+            <div style="font-size:13px; color:#9cb5e6;">SKOR AKHIR</div>
+            <div style="font-family:'Lilita One'; font-size:32px; color:#FFD124;" id="stat-score">2750</div>
+          </div>
+          <div style="background:#1c253b; padding:12px; border-radius:14px;">
+            <div style="font-size:13px; color:#9cb5e6;">SOAL BENAR</div>
+            <div style="font-family:'Lilita One'; font-size:32px; color:#00D26A;" id="stat-correct">25/25</div>
+          </div>
+          <div style="background:#1c253b; padding:12px; border-radius:14px;">
+            <div style="font-size:13px; color:#9cb5e6;">AKURASI</div>
+            <div style="font-family:'Lilita One'; font-size:32px; color:#00E5FF;" id="stat-acc">100%</div>
+          </div>
+          <div style="background:#1c253b; padding:12px; border-radius:14px;">
+            <div style="font-size:13px; color:#9cb5e6;">LENCANA</div>
+            <div style="font-family:'Lilita One'; font-size:20px; color:#FF9F1C; margin-top:6px;" id="stat-badge">🥇 MASTER</div>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:14px; justify-content:center;">
+          <button class="btn-roblox green" onclick="restartGameFull()">🔄 MAIN LAGI</button>
+          <button class="btn-roblox secondary" onclick="goToHome()">🏠 MENU UTAMA</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Teacher Mode Modal -->
+    <div id="teacher-dialog">
+      <div class="teacher-card">
+        <h3 style="font-family:'Lilita One'; font-size:30px; color:#FF9F1C; margin-bottom:14px;">
+          ⚙️ MODE GURU (TEACHER DASHBOARD)
+        </h3>
+        <p style="font-size:14px; color:#b8ccf0; margin-bottom:16px;">
+          Panel kendali guru untuk navigasi level dan evaluasi jawaban siswa SD Kelas V.
+        </p>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:16px;">
+          <div style="background:#232e47; padding:14px; border-radius:14px;">
+            <h4 style="font-family:'Lilita One'; font-size:17px; margin-bottom:8px;">Pilih Level Cepat</h4>
+            <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:6px;">
+              <button class="btn-roblox secondary" style="font-size:12px; padding:6px;" onclick="teacherJumpLevel(0)">Lvl 1</button>
+              <button class="btn-roblox secondary" style="font-size:12px; padding:6px;" onclick="teacherJumpLevel(1)">Lvl 2</button>
+              <button class="btn-roblox secondary" style="font-size:12px; padding:6px;" onclick="teacherJumpLevel(2)">Lvl 3</button>
+              <button class="btn-roblox secondary" style="font-size:12px; padding:6px;" onclick="teacherJumpLevel(3)">Lvl 4</button>
+              <button class="btn-roblox secondary" style="font-size:12px; padding:6px;" onclick="teacherJumpLevel(4)">Lvl 5</button>
+              <button class="btn-roblox yellow" style="font-size:11px; padding:6px;" onclick="teacherRestartQuestion()">↺ Ulang Soal</button>
+            </div>
+          </div>
+
+          <div style="background:#232e47; padding:14px; border-radius:14px;">
+            <h4 style="font-family:'Lilita One'; font-size:17px; margin-bottom:8px;">Sensor & Reset</h4>
+            <label style="font-size:13px; color:#c7d8ff; display:block; margin-bottom:6px;">
+              Sensitivitas Kamera: <span id="sens-label">Sedang</span>
+            </label>
+            <input type="range" id="sens-slider" min="1" max="3" value="2" style="width:100%; margin-bottom:10px;" />
+            <div style="display:flex; gap:6px;">
+              <button class="btn-roblox secondary" style="font-size:12px; padding:6px; flex:1;" onclick="resetPlayerLock()">Kunci Ulang Pemain</button>
+              <button class="btn-roblox secondary" style="font-size:12px; padding:6px; flex:1; background:#8a2034;" onclick="restartGameFull()">Reset Game</button>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-roblox green" style="margin-left:auto; font-size:18px; padding:8px 20px;" onclick="closeTeacherModal()">
+          ✓ TUTUP PANEL
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    /* =========================================================
+       1. GAME DATA: 5 LEVELS, 25 QUESTIONS (KELAS V SD)
+       ========================================================= */
+    const GAME_LEVELS = [
+      {
+        id: 1,
+        title: "LEVEL 1 — NUMBER CITY",
+        shortTitle: "Number City",
+        topic: "Membaca dan Menulis Bilangan Cacah",
+        crystal: "BLUE NUMBER CRYSTAL",
+        theme: "city",
+        choicesCount: 4,
+        questions: [
+          {
+            q: "Bilangan 24.315 dibaca ....",
+            sub: "Pilih nama bilangan yang benar!",
+            choices: [
+              { key: "A", text: "Dua puluh empat ribu tiga ratus lima belas", hint: "⬅️ Langkah KIRI" },
+              { key: "B", text: "Dua puluh empat ribu tiga puluh lima", hint: "✋ Tangan KIRI" },
+              { key: "C", text: "Dua ribu empat ratus tiga puluh lima", hint: "🤚 Tangan KANAN" },
+              { key: "D", text: "Dua puluh empat ribu tiga ratus lima puluh", hint: "➡️ Langkah KANAN" }
+            ],
+            ans: "A"
+          },
+          {
+            q: "“Empat puluh dua ribu seratus tujuh” ditulis ....",
+            sub: "Tentukan lambang bilangan yang tepat!",
+            choices: [
+              { key: "A", text: "42.017", hint: "⬅️ Langkah KIRI" },
+              { key: "B", text: "42.107", hint: "✋ Tangan KIRI" },
+              { key: "C", text: "42.170", hint: "🤚 Tangan KANAN" },
+              { key: "D", text: "42.701", hint: "➡️ Langkah KANAN" }
+            ],
+            ans: "B"
+          },
+          {
+            q: "Bilangan yang dibaca “tiga puluh lima ribu dua ratus delapan” adalah ....",
+            sub: "Perhatikan angka puluhan dan satuannya!",
+            choices: [
+              { key: "A", text: "35.028", hint: "⬅️ Langkah KIRI" },
+              { key: "B", text: "35.280", hint: "✋ Tangan KIRI" },
+              { key: "C", text: "35.208", hint: "🤚 Tangan KANAN" },
+              { key: "D", text: "35.820", hint: "➡️ Langkah KANAN" }
+            ],
+            ans: "C"
+          },
+          {
+            q: "Bilangan 70.045 dibaca ....",
+            sub: "Hati-hati dengan posisi ratusan bernilai 0!",
+            choices: [
+              { key: "A", text: "Tujuh puluh ribu empat ratus lima", hint: "⬅️ Langkah KIRI" },
+              { key: "B", text: "Tujuh ribu empat puluh lima", hint: "✋ Tangan KIRI" },
+              { key: "C", text: "Tujuh puluh ribu empat ratus lima puluh", hint: "🤚 Tangan KANAN" },
+              { key: "D", text: "Tujuh puluh ribu empat puluh lima", hint: "➡️ Langkah KANAN" }
+            ],
+            ans: "D"
+          },
+          {
+            q: "“Lima puluh enam ribu tiga ratus dua puluh” ditulis ....",
+            sub: "Pilih lambang bilangan yang sesuai!",
+            choices: [
+              { key: "A", text: "56.320", hint: "⬅️ Langkah KIRI" },
+              { key: "B", text: "56.032", hint: "✋ Tangan KIRI" },
+              { key: "C", text: "56.302", hint: "🤚 Tangan KANAN" },
+              { key: "D", text: "56.230", hint: "➡️ Langkah KANAN" }
+            ],
+            ans: "A"
+          }
+        ]
+      },
+      {
+        id: 2,
+        title: "LEVEL 2 — PLACE VALUE PARK",
+        shortTitle: "Place Value Park",
+        topic: "Nilai Tempat dan Nilai Angka",
+        crystal: "GREEN PLACE VALUE CRYSTAL",
+        theme: "park",
+        choicesCount: 4,
+        questions: [
+          {
+            q: "Pada bilangan 48.572, angka 8 menempati nilai tempat ....",
+            sub: "Tentukan nama tempat angka 8!",
+            choices: [
+              { key: "A", text: "Ratusan", hint: "⬅️ Langkah KIRI" },
+              { key: "B", text: "Ribuan", hint: "✋ Tangan KIRI" },
+              { key: "C", text: "Puluhan", hint: "🤚 Tangan KANAN" },
+              { key: "D", text: "Puluh ribuan", hint: "➡️ Langkah KANAN" }
+            ],
+            ans: "B"
+          },
+          {
+            q: "Nilai angka 7 pada bilangan 37.421 adalah ....",
+            sub: "Berapakah nilai dari angka 7 tersebut?",
+            choices: [
+              { key: "A", text: "70", hint: "⬅️ Langkah KIRI" },
+              { key: "B", text: "700", hint: "✋ Tangan KIRI" },
+              { key: "C", text: "7.000", hint: "🤚 Tangan KANAN" },
+              { key: "D", text: "70.000", hint: "➡️ Langkah KANAN" }
+            ],
+            ans: "C"
+          },
+          {
+            q: "Pada bilangan 81.564, angka yang menempati tempat ratusan adalah ....",
+            sub: "Cari angka di tempat ratusan!",
+            choices: [
+              { key: "A", text: "1", hint: "⬅️ Langkah KIRI" },
+              { key: "B", text: "6", hint: "✋ Tangan KIRI" },
+              { key: "C", text: "4", hint: "🤚 Tangan KANAN" },
+              { key: "D", text: "5", hint: "➡️ Langkah KANAN" }
+            ],
+            ans: "D"
+          },
+          {
+            q: "Nilai angka 9 pada bilangan 92.315 adalah ....",
+            sub: "Angka 9 berada di posisi puluh ribuan!",
+            choices: [
+              { key: "A", text: "90.000", hint: "⬅️ Langkah KIRI" },
+              { key: "B", text: "9.000", hint: "✋ Tangan KIRI" },
+              { key: "C", text: "900", hint: "🤚 Tangan KANAN" },
+              { key: "D", text: "90", hint: "➡️ Langkah KANAN" }
+            ],
+            ans: "A"
+          },
+          {
+            q: "Pada bilangan 64.283, angka 8 memiliki nilai ....",
+            sub: "Perhatikan tempat puluhan!",
+            choices: [
+              { key: "A", text: "8.000", hint: "⬅️ Langkah KIRI" },
+              { key: "B", text: "800", hint: "✋ Tangan KIRI" },
+              { key: "C", text: "80", hint: "🤚 Tangan KANAN" },
+              { key: "D", text: "8", hint: "➡️ Langkah KANAN" }
+            ],
+            ans: "C"
+          }
+        ]
+      },
+      {
+        id: 3,
+        title: "LEVEL 3 — NUMBER TEMPLE",
+        shortTitle: "Number Temple",
+        topic: "Membandingkan dan Mengurutkan Bilangan",
+        crystal: "YELLOW COMPARISON CRYSTAL",
+        theme: "temple",
+        choicesCount: 4,
+        questions: [
+          {
+            q: "Manakah pernyataan yang benar?",
+            sub: "Bandingkan nilai kedua bilangan cacah!",
+            choices: [
+              { key: "A", text: "45.321 > 45.312", hint: "⬅️ Langkah KIRI" },
+              { key: "B", text: "45.321 < 45.312", hint: "✋ Tangan KIRI" },
+              { key: "C", text: "45.321 = 45.312", hint: "🤚 Tangan KANAN" },
+              { key: "D", text: "45.321 < 44.999", hint: "➡️ Langkah KANAN" }
+            ],
+            ans: "A"
+          },
+          {
+            q: "Bilangan terbesar adalah ....",
+            sub: "Cari bilangan dengan nilai paling besar!",
+            choices: [
+              { key: "A", text: "67.450", hint: "⬅️ Langkah KIRI" },
+              { key: "B", text: "67.540", hint: "✋ Tangan KIRI" },
+              { key: "C", text: "67.405", hint: "🤚 Tangan KANAN" },
+              { key: "D", text: "67.504", hint: "➡️ Langkah KANAN" }
+            ],
+            ans: "B"
+          },
+          {
+            q: "Urutan dari terkecil ke terbesar yang benar adalah ....",
+            sub: "Bandingkan angka ratusan dan puluhannya!",
+            choices: [
+              { key: "A", text: "23.541 – 23.451 – 23.415", hint: "⬅️ Langkah KIRI" },
+              { key: "B", text: "23.451 – 23.415 – 23.541", hint: "✋ Tangan KIRI" },
+              { key: "C", text: "23.415 – 23.451 – 23.541", hint: "🤚 Tangan KANAN" },
+              { key: "D", text: "23.541 – 23.415 – 23.451", hint: "➡️ Langkah KANAN" }
+            ],
+            ans: "C"
+          },
+          {
+            q: "Bilangan yang lebih kecil dari 72.310 adalah ....",
+            sub: "Pilih bilangan yang nilainya kurang dari 72.310!",
+            choices: [
+              { key: "A", text: "72.401", hint: "⬅️ Langkah KIRI" },
+              { key: "B", text: "72.320", hint: "✋ Tangan KIRI" },
+              { key: "C", text: "73.210", hint: "🤚 Tangan KANAN" },
+              { key: "D", text: "72.301", hint: "➡️ Langkah KANAN" }
+            ],
+            ans: "D"
+          },
+          {
+            q: "Lengkapi: 58.427 ... 58.472",
+            sub: "Tentukan tanda perbandingan yang cocok!",
+            choices: [
+              { key: "A", text: "<", hint: "⬅️ Langkah KIRI" },
+              { key: "B", text: ">", hint: "✋ Tangan KIRI" },
+              { key: "C", text: "=", hint: "🤚 Tangan KANAN" },
+              { key: "D", text: "+", hint: "➡️ Langkah KANAN" }
+            ],
+            ans: "A"
+          }
+        ]
+      },
+      {
+        id: 4,
+        title: "LEVEL 4 — MATH LAVA ESCAPE",
+        shortTitle: "Lava Escape",
+        topic: "Komposisi dan Dekomposisi Bilangan",
+        crystal: "ORANGE DECOMPOSITION CRYSTAL",
+        theme: "lava",
+        choicesCount: 2,
+        questions: [
+          {
+            q: "40.000 + 5.000 + 300 + 20 + 8 = ...",
+            sub: "Gabungkan nilai tempat menjadi bilangan utuh!",
+            choices: [
+              { key: "A", text: "45.328", hint: "⬅️ Gerak KIRI" },
+              { key: "B", text: "45.238", hint: "➡️ Gerak KANAN" }
+            ],
+            ans: "A"
+          },
+          {
+            q: "Bilangan 63.417 dapat diuraikan menjadi ....",
+            sub: "Pilih bentuk uraian (dekomposisi) yang sesuai!",
+            choices: [
+              { key: "A", text: "60.000 + 3.000 + 400 + 10 + 7", hint: "⬅️ Gerak KIRI" },
+              { key: "B", text: "60.000 + 300 + 40 + 17", hint: "➡️ Gerak KANAN" }
+            ],
+            ans: "A"
+          },
+          {
+            q: "Bilangan dari: 70.000 + 2.000 + 500 + 6 adalah ....",
+            sub: "Perhatikan posisi puluhan yang bernilai nol!",
+            choices: [
+              { key: "A", text: "72.056", hint: "⬅️ Gerak KIRI" },
+              { key: "B", text: "72.506", hint: "➡️ Gerak KANAN" }
+            ],
+            ans: "B"
+          },
+          {
+            q: "Apakah uraian berikut benar?\n84.235 = 80.000 + 4.000 + 200 + 30 + 5",
+            sub: "Periksa ketepatan setiap suku uraian!",
+            choices: [
+              { key: "A", text: "BENAR", hint: "⬅️ Gerak KIRI" },
+              { key: "B", text: "SALAH", hint: "➡️ Gerak KANAN" }
+            ],
+            ans: "A"
+          },
+          {
+            q: "Mana yang merupakan dekomposisi yang benar dari 91.604?",
+            sub: "Perhatikan tempat ratusan dan puluhan nol!",
+            choices: [
+              { key: "A", text: "90.000 + 1.000 + 600 + 4", hint: "⬅️ Gerak KIRI" },
+              { key: "B", text: "90.000 + 100 + 60 + 4", hint: "➡️ Gerak KANAN" }
+            ],
+            ans: "A"
+          }
+        ]
+      },
+      {
+        id: 5,
+        title: "FINAL LEVEL — SKY CASTLE BOSS BATTLE",
+        shortTitle: "Sky Castle",
+        topic: "Pemecahan Masalah Bilangan Cacah",
+        crystal: "PURPLE MASTER CRYSTAL",
+        theme: "sky",
+        choicesCount: 2,
+        questions: [
+          {
+            q: "Perpustakaan memiliki 24.350 buku, lalu menerima kiriman 3.200 buku. Berapa jumlah buku sekarang?",
+            sub: "Gunakan operasi penjumlahan bilangan cacah!",
+            choices: [
+              { key: "A", text: "27.550", hint: "⬅️ Gerak KIRI" },
+              { key: "B", text: "27.350", hint: "➡️ Gerak KANAN" }
+            ],
+            ans: "A"
+          },
+          {
+            q: "Sebuah toko mempunyai 48.750 pensil. Sebanyak 5.500 pensil terjual. Sisa pensil adalah ....",
+            sub: "Hitung sisa pensil di toko!",
+            choices: [
+              { key: "A", text: "43.250", hint: "⬅️ Gerak KIRI" },
+              { key: "B", text: "44.250", hint: "➡️ Gerak KANAN" }
+            ],
+            ans: "A"
+          },
+          {
+            q: "Desa A memiliki 32.475 penduduk. Desa B memiliki 32.547 penduduk. Desa dengan penduduk lebih banyak adalah ....",
+            sub: "Bandingkan populasi kedua desa!",
+            choices: [
+              { key: "A", text: "Desa A", hint: "⬅️ Gerak KIRI" },
+              { key: "B", text: "Desa B", hint: "➡️ Gerak KANAN" }
+            ],
+            ans: "B"
+          },
+          {
+            q: "Rani mengatakan: “Angka 6 pada bilangan 46.325 bernilai 6.000.” Apakah pernyataan Rani benar?",
+            sub: "Periksa nilai tempat dan nilai angka 6!",
+            choices: [
+              { key: "A", text: "BENAR", hint: "⬅️ Gerak KIRI" },
+              { key: "B", text: "SALAH", hint: "➡️ Gerak KANAN" }
+            ],
+            ans: "A"
+          },
+          {
+            q: "FINAL BOSS: NUMI menemukan kode portal: 50.000 + 7.000 + 400 + 20 + 9. Manakah kode yang benar?",
+            sub: "Buka portal emas kemenangan!",
+            choices: [
+              { key: "A", text: "57.249", hint: "⬅️ Gerak KIRI" },
+              { key: "B", text: "57.429", hint: "➡️ Gerak KANAN" }
+            ],
+            ans: "B"
+          }
+        ]
+      }
+    ];
+
+    /* =========================================================
+       2. AUDIO SYNTHESIZER
+       ========================================================= */
+    class AudioEngine {
+      constructor() {
+        this.ctx = null;
+        this.muted = false;
+        this.bgmTimer = null;
+      }
+      init() {
+        if (!this.ctx) {
+          this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+      playTone(freq, type = 'sine', duration = 0.15, vol = 0.12) {
+        if (this.muted || !this.ctx) return;
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+          gain.gain.setValueAtTime(vol, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        } catch(e){}
+      }
+      playDing() {
+        this.init();
+        this.playTone(523.25, 'triangle', 0.1, 0.2);
+        setTimeout(() => this.playTone(659.25, 'triangle', 0.12, 0.2), 80);
+        setTimeout(() => this.playTone(1046.50, 'sine', 0.35, 0.25), 160);
+      }
+      playError() {
+        this.init();
+        this.playTone(260, 'sawtooth', 0.2, 0.15);
+        setTimeout(() => this.playTone(190, 'sawtooth', 0.25, 0.15), 150);
+      }
+      playLockTick(count) {
+        this.init();
+        this.playTone(count === 1 ? 880 : 587, 'square', 0.08, 0.1);
+      }
+      playFanfare() {
+        this.init();
+        [523.25, 659.25, 783.99, 1046.50].forEach((f, i) => {
+          setTimeout(() => this.playTone(f, 'triangle', 0.25, 0.2), i * 110);
+        });
+      }
+      startBgm(lvlIdx) {
+        this.stopBgm();
+        if (this.muted) return;
+        this.init();
+        const scales = [
+          [261, 329, 392, 523], // City
+          [293, 369, 440, 587], // Park
+          [220, 261, 329, 440], // Temple
+          [196, 233, 293, 392], // Lava
+          [329, 415, 493, 659]  // Castle
+        ];
+        const notes = scales[lvlIdx % scales.length];
+        let step = 0;
+        this.bgmTimer = setInterval(() => {
+          if (!this.muted && this.ctx) {
+            this.playTone(notes[step % notes.length], 'sine', 0.16, 0.04);
+            step++;
+          }
+        }, 260);
+      }
+      stopBgm() {
+        if (this.bgmTimer) {
+          clearInterval(this.bgmTimer);
+          this.bgmTimer = null;
+        }
+      }
+      toggleMute() {
+        this.muted = !this.muted;
+        if (this.muted) this.stopBgm();
+        else this.startBgm(game.lvlIdx);
+        return this.muted;
+      }
+    }
+
+    const sound = new AudioEngine();
+
+    /* =========================================================
+       3. GAME STATE & 30-SECOND TIMER
+       ========================================================= */
+    const game = {
+      lvlIdx: 0,
+      qIdx: 0,
+      score: 0,
+      streak: 0,
+      totalCorrect: 0,
+      crystals: [false, false, false, false, false],
+      active: false,
+      qStartTime: 0,
+      timeLeft: 30,
+      timerInterval: null,
+      isCooldown: false,
+      cooldownTimer: 0,
+      lockTarget: null,
+      lockTimerStart: 0,
+      sensitivity: 2,
+      avatarAction: 'idle',
+      avatarX: 640,
+      avatarTargetX: 640
+    };
+
+    /* =========================================================
+       4. PROCEDURAL CANVAS RENDERER
+       ========================================================= */
+    const canvas = document.getElementById('world-canvas');
+    const ctx = canvas.getContext('2d');
+    let tick = 0;
+
+    function drawVoxel(x, y, w, h, d, topCol, frontCol, sideCol) {
+      ctx.fillStyle = topCol;
+      ctx.beginPath();
+      ctx.moveTo(x, y - h);
+      ctx.lineTo(x + w, y - h);
+      ctx.lineTo(x + w + d * 0.5, y - h - d * 0.4);
+      ctx.lineTo(x + d * 0.5, y - h - d * 0.4);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = frontCol;
+      ctx.fillRect(x, y - h, w, h);
+
+      ctx.fillStyle = sideCol;
+      ctx.beginPath();
+      ctx.moveTo(x + w, y - h);
+      ctx.lineTo(x + w + d * 0.5, y - h - d * 0.4);
+      ctx.lineTo(x + w + d * 0.5, y - d * 0.4);
+      ctx.lineTo(x + w, y);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    function renderWorld(theme) {
+      ctx.clearRect(0, 0, 1280, 720);
+
+      if (theme === 'city') {
+        const sky = ctx.createLinearGradient(0, 0, 0, 480);
+        sky.addColorStop(0, '#5390EB');
+        sky.addColorStop(1, '#97C6FF');
+        ctx.fillStyle = sky;
+        ctx.fillRect(0, 0, 1280, 720);
+
+        const bCols = [
+          { t: '#49B3FF', f: '#2283DB', s: '#165FA6' },
+          { t: '#FFCF43', f: '#E6A817', s: '#BA8002' },
+          { t: '#47DE79', f: '#21B351', s: '#128236' },
+          { t: '#FF6E85', f: '#E83E5B', s: '#AD1F36' },
+          { t: '#A368F5', f: '#7939D6', s: '#571FA6' }
+        ];
+        for (let i = 0; i < 9; i++) {
+          const bx = 40 + i * 140;
+          const bh = 140 + ((i * 37) % 110);
+          const col = bCols[i % bCols.length];
+          drawVoxel(bx, 490, 100, bh, 30, col.t, col.f, col.s);
+          ctx.fillStyle = '#FFF8BA';
+          for (let r = 0; r < 3; r++) {
+            ctx.fillRect(bx + 20, 490 - bh + 25 + r * 30, 20, 18);
+            ctx.fillRect(bx + 60, 490 - bh + 25 + r * 30, 20, 18);
+          }
+        }
+        ctx.fillStyle = '#4B5563';
+        ctx.fillRect(0, 490, 1280, 230);
+        ctx.fillStyle = '#9CA3AF';
+        ctx.fillRect(0, 480, 1280, 14);
+        ctx.fillStyle = '#FDE047';
+        for (let r = 0; r < 9; r++) {
+          ctx.fillRect(40 + r * 150, 600, 80, 14);
+        }
+
+      } else if (theme === 'park') {
+        const sky = ctx.createLinearGradient(0, 0, 0, 500);
+        sky.addColorStop(0, '#48CAE4');
+        sky.addColorStop(1, '#90E0EF');
+        ctx.fillStyle = sky;
+        ctx.fillRect(0, 0, 1280, 720);
+        ctx.fillStyle = '#52B788';
+        ctx.beginPath();
+        ctx.arc(300, 560, 360, 0, Math.PI * 2);
+        ctx.arc(880, 560, 400, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#74C69D';
+        ctx.fillRect(0, 480, 1280, 240);
+        for (let t = 0; t < 5; t++) {
+          const tx = 90 + t * 270;
+          drawVoxel(tx + 30, 490, 25, 60, 15, '#B07D62', '#8F5D45', '#6A412E');
+          drawVoxel(tx, 430, 85, 75, 25, '#52B788', '#40916C', '#2D6A4F');
+        }
+
+      } else if (theme === 'temple') {
+        const sky = ctx.createLinearGradient(0, 0, 0, 490);
+        sky.addColorStop(0, '#1E1B4B');
+        sky.addColorStop(1, '#4338CA');
+        ctx.fillStyle = sky;
+        ctx.fillRect(0, 0, 1280, 720);
+        for (let i = 0; i < 6; i++) {
+          const px = 70 + i * 210;
+          drawVoxel(px, 490, 65, 220, 30, '#D4AF37', '#997A15', '#66510B');
+        }
+        ctx.fillStyle = '#374151';
+        ctx.fillRect(0, 490, 1280, 230);
+        ctx.fillStyle = '#F59E0B';
+        ctx.fillRect(0, 480, 1280, 12);
+
+      } else if (theme === 'lava') {
+        const sky = ctx.createLinearGradient(0, 0, 0, 500);
+        sky.addColorStop(0, '#450A0A');
+        sky.addColorStop(1, '#991B1B');
+        ctx.fillStyle = sky;
+        ctx.fillRect(0, 0, 1280, 720);
+        ctx.fillStyle = '#EA580C';
+        ctx.fillRect(0, 520, 1280, 200);
+        drawVoxel(160, 510, 360, 50, 40, '#374151', '#1F2937', '#111827');
+        drawVoxel(760, 510, 360, 50, 40, '#374151', '#1F2937', '#111827');
+
+      } else if (theme === 'sky') {
+        const sky = ctx.createLinearGradient(0, 0, 0, 720);
+        sky.addColorStop(0, '#2E1065');
+        sky.addColorStop(0.5, '#581C87');
+        sky.addColorStop(1, '#7E22CE');
+        ctx.fillStyle = sky;
+        ctx.fillRect(0, 0, 1280, 720);
+        const rad = 130 + Math.sin(tick * 0.08) * 8;
+        const grad = ctx.createRadialGradient(640, 320, 15, 640, 320, rad);
+        grad.addColorStop(0, '#FFFBEB');
+        grad.addColorStop(0.4, '#FDE047');
+        grad.addColorStop(0.7, '#A855F7');
+        grad.addColorStop(1, 'rgba(126, 34, 206, 0)');
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(640, 320, rad, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#EDE9FE';
+        ctx.fillRect(180, 480, 920, 80);
+      }
+    }
+
+    function renderAvatar(x, y, action) {
+      ctx.save();
+      ctx.translate(x, y);
+
+      let bounce = 0;
+      let leftArmRot = 0;
+      let rightArmRot = 0;
+      let headY = -90;
+      let bodyY = -60;
+
+      if (action === 'left' || action === 'right') {
+        bounce = Math.abs(Math.sin(tick * 0.25)) * 8;
+        leftArmRot = -Math.sin(tick * 0.25) * 0.4;
+        rightArmRot = Math.sin(tick * 0.25) * 0.4;
+      } else if (action === 'arm_l_up') {
+        leftArmRot = -2.8;
+      } else if (action === 'arm_r_up') {
+        rightArmRot = 2.8;
+      } else if (action === 'happy') {
+        bounce = Math.abs(Math.sin(tick * 0.3)) * 14;
+        leftArmRot = -2.6;
+        rightArmRot = 2.6;
+      } else {
+        bounce = Math.sin(tick * 0.08) * 3;
+      }
+
+      ctx.translate(0, -bounce);
+
+      // Backpack
+      drawVoxel(-16, bodyY + 4, 32, 36, 16, '#B45309', '#92400E', '#78350F');
+
+      // Legs
+      drawVoxel(-14, bodyY + 54, 18, 36, 12, '#1E293B', '#0F172A', '#020617');
+      drawVoxel(-14, bodyY + 66, 18, 12, 16, '#EF4444', '#DC2626', '#B91C1C');
+
+      drawVoxel(8, bodyY + 54, 18, 36, 12, '#1E293B', '#0F172A', '#020617');
+      drawVoxel(8, bodyY + 66, 18, 12, 16, '#EF4444', '#DC2626', '#B91C1C');
+
+      // Torso
+      drawVoxel(-26, bodyY + 54, 52, 54, 20, '#38BDF8', '#0284C7', '#0369A1');
+
+      // Arms
+      ctx.save();
+      ctx.translate(-28, bodyY + 10);
+      ctx.rotate(leftArmRot);
+      drawVoxel(-8, 44, 16, 44, 14, '#38BDF8', '#0284C7', '#0369A1');
+      drawVoxel(-7, 56, 14, 12, 12, '#FED7AA', '#FDBA74', '#FB923C');
+      ctx.restore();
+
+      ctx.save();
+      ctx.translate(28, bodyY + 10);
+      ctx.rotate(rightArmRot);
+      drawVoxel(-8, 44, 16, 44, 14, '#38BDF8', '#0284C7', '#0369A1');
+      drawVoxel(-7, 56, 14, 12, 12, '#FED7AA', '#FDBA74', '#FB923C');
+      ctx.restore();
+
+      // Head
+      drawVoxel(-24, headY + 46, 48, 46, 30, '#FDE047', '#FACC15', '#EAB308');
+      drawVoxel(-26, headY + 8, 52, 16, 32, '#78350F', '#5F280A', '#451A03');
+
+      ctx.fillStyle = '#0F172A';
+      ctx.fillRect(-14, headY + 16, 8, 10);
+      ctx.fillRect(6, headY + 16, 8, 10);
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(-13, headY + 17, 3, 3);
+      ctx.fillRect(7, headY + 17, 3, 3);
+
+      ctx.strokeStyle = '#0F172A';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(0, headY + 28, 8, 0.1, Math.PI - 0.1);
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    function renderLoop() {
+      tick++;
+      const currentLevel = GAME_LEVELS[game.lvlIdx];
+      const theme = currentLevel ? currentLevel.theme : 'city';
+
+      renderWorld(theme);
+      game.avatarX += (game.avatarTargetX - game.avatarX) * 0.14;
+      renderAvatar(game.avatarX, 480, game.avatarAction);
+
+      if (game.isCooldown && Date.now() > game.cooldownTimer) {
+        game.isCooldown = false;
+      }
+
+      requestAnimationFrame(renderLoop);
+    }
+
+    /* =========================================================
+       5. SINGLE-PLAYER LOCK-IN & STABILIZED POSE DETECTION
+       ========================================================= */
+    const vElem = document.getElementById('webcam-elem');
+    const cElem = document.getElementById('cam-canvas');
+    const cCtx = cElem.getContext('2d');
+    const camStatus = document.getElementById('cam-status');
+
+    let poseEngine = null;
+    let cameraPipe = null;
+
+    // Anchor Lock & Temporal Smoothing State
+    const playerTracker = {
+      isLocked: false,
+      anchorX: 0.5,
+      anchorY: 0.5,
+      shoulderDist: 0.25,
+      smoothPose: null, // EMA filter
+      filterAlpha: 0.35 // Smoothing weight
+    };
+
+    function resetPlayerLock() {
+      playerTracker.isLocked = false;
+      playerTracker.smoothPose = null;
+      camStatus.textContent = '● MENCARI PEMAIN...';
+      const cTxt = document.getElementById('calib-txt');
+      if (cTxt) cTxt.textContent = '“Berdirilah di tengah & angkat KEDUA TANGAN untuk mengunci!”';
+    }
+
+    async function initWebcam() {
+      camStatus.textContent = 'MEMULAI SENSOR...';
+      try {
+        if (typeof Pose === 'undefined') throw new Error('Pose CDN loading...');
+
+        poseEngine = new Pose({
+          locateFile: (f) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${f}`
+        });
+        poseEngine.setOptions({
+          modelComplexity: 1,
+          smoothLandmarks: true,
+          minDetectionConfidence: 0.55,
+          minTrackingConfidence: 0.55
+        });
+        poseEngine.onResults(handlePoseResults);
+
+        cameraPipe = new Camera(vElem, {
+          onFrame: async () => {
+            if (poseEngine && vElem) await poseEngine.send({ image: vElem });
+          },
+          width: 320,
+          height: 240
+        });
+        await cameraPipe.start();
+        camStatus.textContent = '● SENSOR AKTIF';
+      } catch (err) {
+        console.warn('Webcam bypass or keyboard active:', err);
+        camStatus.textContent = '⌨️ KEYBOARD MODE';
+        document.getElementById('kb-guide').style.borderColor = '#FFD124';
+      }
+    }
+
+    function handlePoseResults(res) {
+      cCtx.clearRect(0, 0, cElem.width, cElem.height);
+      if (!res.poseLandmarks) return;
+
+      const raw = res.poseLandmarks;
+      const nose = raw[0];
+      const lSh = raw[11];
+      const rSh = raw[12];
+      const lWr = raw[15];
+      const rWr = raw[16];
+
+      // 1. Calculate Torso Width & Center
+      const curTorsoWidth = Math.hypot(lSh.x - rSh.x, lSh.y - rSh.y);
+      const curCenterX = (lSh.x + rSh.x) / 2;
+      const curCenterY = (lSh.y + rSh.y) / 2;
+
+      // Filter out small background detections (people walking far behind)
+      if (curTorsoWidth < 0.12) {
+        return; // Terlalu jauh / bukan pemain utama di depan
+      }
+
+      // 2. Lock onto the Primary Player
+      if (!playerTracker.isLocked) {
+        // Player is centered if within middle third of screen
+        if (curCenterX >= 0.30 && curCenterX <= 0.70) {
+          playerTracker.anchorX = curCenterX;
+          playerTracker.anchorY = curCenterY;
+          playerTracker.shoulderDist = curTorsoWidth;
+          playerTracker.isLocked = true;
+          camStatus.textContent = '● 1 PEMAIN TERKUNCI';
+        }
+      } else {
+        // Distance check from established primary player
+        const distFromAnchor = Math.hypot(curCenterX - playerTracker.anchorX, curCenterY - playerTracker.anchorY);
+        // If detected pose suddenly jumps too far, ignore background disturbance
+        if (distFromAnchor > 0.45) {
+          return;
+        }
+        // Slowly track gentle natural body movements of the same player
+        playerTracker.anchorX += (curCenterX - playerTracker.anchorX) * 0.1;
+        playerTracker.anchorY += (curCenterY - playerTracker.anchorY) * 0.1;
+      }
+
+      // 3. Temporal Smoothing (EMA Filter) to Eliminate Jitter
+      if (!playerTracker.smoothPose) {
+        playerTracker.smoothPose = {
+          noseX: nose.x,
+          lWristY: lWr.y,
+          rWristY: rWr.y,
+          lShoulderY: lSh.y,
+          rShoulderY: rSh.y,
+          torsoX: curCenterX
+        };
+      } else {
+        const a = playerTracker.filterAlpha;
+        playerTracker.smoothPose.noseX = playerTracker.smoothPose.noseX * (1 - a) + nose.x * a;
+        playerTracker.smoothPose.lWristY = playerTracker.smoothPose.lWristY * (1 - a) + lWr.y * a;
+        playerTracker.smoothPose.rWristY = playerTracker.smoothPose.rWristY * (1 - a) + rWr.y * a;
+        playerTracker.smoothPose.lShoulderY = playerTracker.smoothPose.lShoulderY * (1 - a) + lSh.y * a;
+        playerTracker.smoothPose.rShoulderY = playerTracker.smoothPose.rShoulderY * (1 - a) + rSh.y * a;
+        playerTracker.smoothPose.torsoX = playerTracker.smoothPose.torsoX * (1 - a) + curCenterX * a;
+      }
+
+      const sp = playerTracker.smoothPose;
+
+      // Draw clean, single-player tracking feedback in PIP
+      cCtx.strokeStyle = '#00E5FF';
+      cCtx.lineWidth = 3;
+      cCtx.beginPath();
+      cCtx.moveTo(lSh.x * cElem.width, lSh.y * cElem.height);
+      cCtx.lineTo(rSh.x * cElem.width, rSh.y * cElem.height);
+      cCtx.lineTo(rWr.x * cElem.width, rWr.y * cElem.height);
+      cCtx.moveTo(lSh.x * cElem.width, lSh.y * cElem.height);
+      cCtx.lineTo(lWr.x * cElem.width, lWr.y * cElem.height);
+      cCtx.stroke();
+
+      // Green lock ring on player head
+      cCtx.strokeStyle = '#00FF88';
+      cCtx.lineWidth = 2;
+      cCtx.beginPath();
+      cCtx.arc(nose.x * cElem.width, nose.y * cElem.height, 12, 0, Math.PI * 2);
+      cCtx.stroke();
+
+      // 4. Normalized Movement Thresholds (Independent of Camera Resolution / Height)
+      const handThresh = curTorsoWidth * (game.sensitivity === 1 ? 0.35 : (game.sensitivity === 3 ? 0.15 : 0.25));
+      const stepThresh = curTorsoWidth * (game.sensitivity === 1 ? 0.50 : (game.sensitivity === 3 ? 0.25 : 0.35));
+
+      const isBothHandsUp = (sp.lWristY < sp.lShoulderY - handThresh) && (sp.rWristY < sp.rShoulderY - handThresh);
+      const isLeftHandUp = (sp.lWristY < sp.lShoulderY - handThresh) && (sp.rWristY >= sp.rShoulderY);
+      const isRightHandUp = (sp.rWristY < sp.rShoulderY - handThresh) && (sp.lWristY >= sp.lShoulderY);
+      const isSteppingLeft = (sp.torsoX > 0.50 + stepThresh);
+      const isSteppingRight = (sp.torsoX < 0.50 - stepThresh);
+
+      let act = null;
+
+      if (isBothHandsUp) {
+        act = 'BOTH_HANDS_UP';
+      } else if (game.lvlIdx >= 3) {
+        // Level 4 & 5: Left (A) or Right (B) only
+        if (isSteppingLeft) act = 'A';
+        else if (isSteppingRight) act = 'B';
+      } else {
+        // Level 1-3: 4 Distinct Poses
+        // Tangan diprioritaskan jika tegak, langkah jika condong
+        if (isLeftHandUp) act = 'B';
+        else if (isRightHandUp) act = 'C';
+        else if (isSteppingLeft) act = 'A';
+        else if (isSteppingRight) act = 'D';
+      }
+
+      onActionDetected(act);
+    }
+
+    /* =========================================================
+       6. MOTION INPUT RESOLVER (NON-INTRUSIVE TOP INDICATOR)
+       ========================================================= */
+    const lockPill = document.getElementById('lock-hud-pill');
+    const lockPillLetter = document.getElementById('lock-pill-letter');
+    const lockPillCountdown = document.getElementById('lock-pill-countdown');
+
+    function onActionDetected(act) {
+      const calibScreen = document.getElementById('screen-calib');
+      if (calibScreen.style.display === 'flex') {
+        if (act === 'BOTH_HANDS_UP') {
+          sound.playDing();
+          openTutorial();
+        }
+        return;
+      }
+
+      if (!game.active || game.isCooldown) return;
+
+      if (act === 'A') { game.avatarAction = 'left'; game.avatarTargetX = 430; }
+      else if (act === 'D') { game.avatarAction = 'right'; game.avatarTargetX = 850; }
+      else if (act === 'B') { game.avatarAction = 'arm_l_up'; game.avatarTargetX = 600; }
+      else if (act === 'C') { game.avatarAction = 'arm_r_up'; game.avatarTargetX = 680; }
+      else { game.avatarAction = 'idle'; game.avatarTargetX = 640; }
+
+      if (!act) {
+        cancelLock();
+        return;
+      }
+
+      if (game.lockTarget !== act) {
+        game.lockTarget = act;
+        game.lockTimerStart = Date.now();
+        highlightCandidate(act);
+      } else {
+        const elapsed = Date.now() - game.lockTimerStart;
+        const targetDuration = 1000; // 1 detik tahan konsisten
+        const pct = Math.min(100, (elapsed / targetDuration) * 100);
+        updateCardMeter(act, pct);
+
+        if (elapsed >= 150) {
+          const rem = Math.max(0, targetDuration - elapsed);
+          const count = Math.ceil(rem / 350);
+          lockPill.classList.add('show');
+          lockPillLetter.textContent = act;
+          lockPillCountdown.textContent = count <= 0 ? 'LOCKED!' : `(${count}s)`;
+          sound.playLockTick(count);
+        }
+
+        if (elapsed >= targetDuration) {
+          cancelLock();
+          submitAnswer(act);
+        }
+      }
+    }
+
+    function highlightCandidate(k) {
+      document.querySelectorAll('.choice-card').forEach(c => c.classList.remove('holding'));
+      const el = document.querySelector(`.choice-card[data-key="${k}"]`);
+      if (el) el.classList.add('holding');
+    }
+
+    function updateCardMeter(k, pct) {
+      const el = document.querySelector(`.choice-card[data-key="${k}"] .fill-meter`);
+      if (el) el.style.width = `${pct}%`;
+    }
+
+    function cancelLock() {
+      game.lockTarget = null;
+      game.lockTimerStart = 0;
+      lockPill.classList.remove('show');
+      document.querySelectorAll('.choice-card').forEach(c => {
+        c.classList.remove('holding');
+        const m = c.querySelector('.fill-meter');
+        if (m) m.style.width = '0%';
+      });
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (!game.active || game.isCooldown) return;
+      let key = null;
+      if (game.lvlIdx >= 3) {
+        if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') key = 'A';
+        if (e.key === 'ArrowRight' || e.key === 'b' || e.key === 'B') key = 'B';
+      } else {
+        if (e.key === 'ArrowLeft') key = 'A';
+        if (e.key === 'z' || e.key === 'Z') key = 'B';
+        if (e.key === 'm' || e.key === 'M') key = 'C';
+        if (e.key === 'ArrowRight') key = 'D';
+      }
+      if (key) {
+        onActionDetected(key);
+        setTimeout(() => {
+          if (game.lockTarget === key) submitAnswer(key);
+        }, 250);
+      }
+    });
+
+    /* =========================================================
+       7. QUIZ LOGIC WITH 30 SECONDS TIMEOUT
+       ========================================================= */
+    function startQuestionTimer() {
+      clearInterval(game.timerInterval);
+      game.timeLeft = 30;
+      updateTimerUI();
+
+      game.timerInterval = setInterval(() => {
+        if (!game.active || game.isCooldown) return;
+        game.timeLeft--;
+        updateTimerUI();
+
+        if (game.timeLeft <= 0) {
+          clearInterval(game.timerInterval);
+          handleTimeOut();
+        }
+      }, 1000);
+    }
+
+    function updateTimerUI() {
+      const timerSec = document.getElementById('hud-timer-sec');
+      const timerCard = document.getElementById('hud-timer-card');
+      timerSec.textContent = game.timeLeft < 10 ? `0${game.timeLeft}` : game.timeLeft;
+
+      if (game.timeLeft <= 10) {
+        timerCard.classList.add('danger');
+      } else {
+        timerCard.classList.remove('danger');
+      }
+    }
+
+    function handleTimeOut() {
+      if (game.isCooldown) return;
+      game.isCooldown = true;
+      game.cooldownTimer = Date.now() + 1800;
+
+      sound.playError();
+      const level = GAME_LEVELS[game.lvlIdx];
+      const q = level.questions[game.qIdx];
+      const correctCard = document.querySelector(`.choice-card[data-key="${q.ans}"]`);
+      if (correctCard) correctCard.classList.add('correct');
+
+      game.streak = 0;
+      game.avatarAction = 'idle';
+      showFeedback('⏳ WAKTU HABIS!', `Jawaban: ${q.ans}. Tetap semangat!`, true);
+
+      setTimeout(() => {
+        hideFeedback();
+        if (game.qIdx < 4) {
+          game.qIdx++;
+          loadQuestion();
+        } else {
+          finishLevel();
+        }
+      }, 1700);
+    }
+
+    function loadQuestion() {
+      const level = GAME_LEVELS[game.lvlIdx];
+      const q = level.questions[game.qIdx];
+
+      game.qStartTime = Date.now();
+      game.avatarAction = 'idle';
+      game.avatarTargetX = 640;
+
+      document.getElementById('hud-level-title').textContent = `LEVEL ${level.id}`;
+      document.getElementById('hud-q-count').textContent = `${game.qIdx + 1}/5`;
+      document.getElementById('q-topic').textContent = level.topic.toUpperCase();
+      document.getElementById('q-text').textContent = q.q;
+      document.getElementById('q-sub').textContent = q.sub;
+
+      const dots = document.querySelectorAll('#hud-progress-dots .p-block');
+      dots.forEach((dot, idx) => {
+        dot.className = 'p-block';
+        if (idx < game.qIdx) dot.classList.add('done');
+        if (idx === game.qIdx) dot.classList.add('active');
+      });
+
+      const box = document.getElementById('choices-box');
+      box.className = q.choices.length === 2 ? 'choices-grid-2' : 'choices-grid-4';
+      box.innerHTML = '';
+
+      q.choices.forEach(ch => {
+        const card = document.createElement('div');
+        card.className = 'choice-card';
+        card.dataset.key = ch.key;
+
+        card.innerHTML = `
+          <div class="choice-key">${ch.key}</div>
+          <div class="choice-text-box">
+            <div class="choice-text">${ch.text}</div>
+            <div class="choice-hint">${ch.hint}</div>
+          </div>
+          <div class="fill-meter"></div>
+        `;
+
+        card.addEventListener('click', () => {
+          submitAnswer(ch.key);
+        });
+
+        box.appendChild(card);
+      });
+
+      const kb = document.getElementById('kb-guide');
+      if (q.choices.length === 2) {
+        kb.innerHTML = '<span>⌨️ 2 Pilihan:</span> <span class="kb-badge">⬅️ A: KIRI</span> <span class="kb-badge">➡️ B: KANAN</span>';
+      } else {
+        kb.innerHTML = '<span>⌨️ Shortcut:</span> <span class="kb-badge">⬅️ A</span> <span class="kb-badge">Z: B (✋Kiri)</span> <span class="kb-badge">M: C (🤚Kanan)</span> <span class="kb-badge">➡️ D</span>';
+      }
+
+      startQuestionTimer();
+    }
+
+    function submitAnswer(chosenKey) {
+      if (game.isCooldown) return;
+      clearInterval(game.timerInterval);
+      game.isCooldown = true;
+      game.cooldownTimer = Date.now() + 1800;
+
+      const level = GAME_LEVELS[game.lvlIdx];
+      const q = level.questions[game.qIdx];
+      const isCorrect = chosenKey === q.ans;
+      const durationSec = (Date.now() - game.qStartTime) / 1000;
+
+      const card = document.querySelector(`.choice-card[data-key="${chosenKey}"]`);
+      const correctCard = document.querySelector(`.choice-card[data-key="${q.ans}"]`);
+
+      if (isCorrect) {
+        sound.playDing();
+        if (card) card.classList.add('correct');
+
+        let points = 100;
+        let isFast = durationSec < 10;
+        if (isFast) points += 50;
+
+        game.score += points;
+        game.streak++;
+        game.totalCorrect++;
+
+        if (game.streak >= 3) {
+          game.score += 100;
+        }
+
+        document.getElementById('hud-score').textContent = game.score;
+        game.avatarAction = 'happy';
+
+        const praises = ["Awesome!", "Great job!", "Keren!", "Math Power!", "Hebat!"];
+        const cheer = praises[Math.floor(Math.random() * praises.length)];
+        showFeedback(`✅ ${cheer}`, `+${points} Poin ${isFast ? '(Bonus Cepat!)' : ''}`, false);
+
+      } else {
+        sound.playError();
+        if (card) card.classList.add('wrong');
+        if (correctCard) correctCard.classList.add('correct');
+
+        game.streak = 0;
+        game.avatarAction = 'idle';
+        showFeedback(`Oops! Jawaban: ${q.ans}`, "Hampir! Tetap semangat, yuk lanjut!", true);
+      }
+
+      setTimeout(() => {
+        hideFeedback();
+        if (game.qIdx < 4) {
+          game.qIdx++;
+          loadQuestion();
+        } else {
+          finishLevel();
+        }
+      }, 1700);
+    }
+
+    function showFeedback(main, sub, isWrong) {
+      const fb = document.getElementById('toast-feedback');
+      document.getElementById('fb-main').textContent = main;
+      document.getElementById('fb-sub').textContent = sub;
+      fb.className = isWrong ? 'show wrong' : 'show';
+    }
+
+    function hideFeedback() {
+      document.getElementById('toast-feedback').className = '';
+    }
+
+    /* =========================================================
+       8. LEVEL TRANSITIONS & MAP
+       ========================================================= */
+    function finishLevel() {
+      clearInterval(game.timerInterval);
+      game.active = false;
+      game.crystals[game.lvlIdx] = true;
+      const cCount = game.crystals.filter(Boolean).length;
+      document.getElementById('hud-crystal-count').textContent = `${cCount}/5`;
+
+      sound.playFanfare();
+
+      if (game.lvlIdx < 4) {
+        showWorldMap();
+      } else {
+        showVictoryScreen();
+      }
+    }
+
+    function showWorldMap() {
+      const container = document.getElementById('map-nodes');
+      container.innerHTML = '';
+
+      GAME_LEVELS.forEach((lvl, idx) => {
+        const isDone = game.crystals[idx];
+        const isActive = idx === game.lvlIdx + 1;
+        const icons = ['🏙️', '🎡', '🏛️', '🌋', '🏰'];
+
+        const item = document.createElement('div');
+        item.style.cssText = `
+          width: 130px;
+          background: ${isDone ? '#133324' : '#1c2438'};
+          border: 3px solid ${isDone ? '#00D26A' : (isActive ? '#00e5ff' : '#3f517a')};
+          border-radius: 18px;
+          padding: 14px 8px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 6px;
+          box-shadow: ${isActive ? '0 0 16px rgba(0,229,255,0.4)' : 'none'};
+        `;
+        item.innerHTML = `
+          <div style="font-size:30px;">${icons[idx]}</div>
+          <div style="font-family:'Lilita One'; font-size:14px; color:#fff;">${lvl.shortTitle}</div>
+          <div style="font-size:11px; font-weight:700; color:${isDone ? '#00FF88' : (isActive ? '#00E5FF' : '#6B7280')}">
+            ${isDone ? 'SELESAI ✅' : (isActive ? 'TERBUKA 🔓' : 'TERKUNCI 🔒')}
+          </div>
+        `;
+        container.appendChild(item);
+      });
+
+      document.getElementById('map-numi-text').innerHTML = `
+        “Hebat! Kamu meraih <strong>${GAME_LEVELS[game.lvlIdx].crystal}</strong>! Ayo lanjut ke level berikutnya!”
+      `;
+
+      document.getElementById('screen-map').style.display = 'flex';
+    }
+
+    function showVictoryScreen() {
+      sound.playFanfare();
+      const totalQ = 25;
+      const acc = Math.round((game.totalCorrect / totalQ) * 100);
+
+      document.getElementById('stat-score').textContent = game.score;
+      document.getElementById('stat-correct').textContent = `${game.totalCorrect}/${totalQ}`;
+      document.getElementById('stat-acc').textContent = `${acc}%`;
+
+      let badge = "🥉 NUMBER EXPLORER";
+      if (acc >= 90) badge = "🥇 NUMBER MASTER";
+      else if (acc >= 75) badge = "🥈 NUMBER HERO";
+      document.getElementById('stat-badge').textContent = badge;
+
+      document.getElementById('screen-victory').style.display = 'flex';
+      game.avatarAction = 'happy';
+    }
+
+    function startLevel(idx) {
+      game.lvlIdx = idx;
+      game.qIdx = 0;
+      game.active = true;
+      document.querySelectorAll('.screen-layer').forEach(m => m.style.display = 'none');
+      sound.startBgm(idx);
+      loadQuestion();
+    }
+
+    /* =========================================================
+       9. CALIBRATION & TUTORIAL
+       ========================================================= */
+    function openCalibration() {
+      document.getElementById('screen-start').style.display = 'none';
+      document.getElementById('screen-calib').style.display = 'flex';
+      resetPlayerLock();
+      initWebcam();
+    }
+
+    function openTutorial() {
+      document.getElementById('screen-calib').style.display = 'none';
+      document.getElementById('screen-start').style.display = 'none';
+      document.getElementById('screen-tutorial').style.display = 'flex';
+    }
+
+    /* =========================================================
+       10. TEACHER DASHBOARD
+       ========================================================= */
+    const teacherBtn = document.getElementById('btn-teacher');
+    const teacherBar = document.getElementById('teacher-press-bar');
+    let teacherTimer = null;
+    let teacherStart = 0;
+
+    teacherBtn.addEventListener('mousedown', () => {
+      teacherStart = Date.now();
+      teacherTimer = setInterval(() => {
+        const el = Date.now() - teacherStart;
+        const pct = Math.min(100, (el / 3000) * 100);
+        teacherBar.style.width = `${pct}%`;
+        if (el >= 3000) {
+          clearInterval(teacherTimer);
+          teacherBar.style.width = '0%';
+          document.getElementById('teacher-dialog').style.display = 'flex';
+        }
+      }, 50);
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (teacherTimer) {
+        clearInterval(teacherTimer);
+        teacherBar.style.width = '0%';
+      }
+    });
+
+    function closeTeacherModal() {
+      document.getElementById('teacher-dialog').style.display = 'none';
+    }
+
+    function teacherJumpLevel(idx) {
+      closeTeacherModal();
+      startLevel(idx);
+    }
+
+    function teacherRestartQuestion() {
+      closeTeacherModal();
+      loadQuestion();
+    }
+
+    function restartGameFull() {
+      game.lvlIdx = 0;
+      game.qIdx = 0;
+      game.score = 0;
+      game.streak = 0;
+      game.totalCorrect = 0;
+      game.crystals = [false, false, false, false, false];
+      document.getElementById('hud-score').textContent = '0';
+      document.getElementById('hud-crystal-count').textContent = '0/5';
+      resetPlayerLock();
+      closeTeacherModal();
+      startLevel(0);
+    }
+
+    function goToHome() {
+      clearInterval(game.timerInterval);
+      document.querySelectorAll('.screen-layer').forEach(m => m.style.display = 'none');
+      document.getElementById('screen-start').style.display = 'flex';
+      sound.stopBgm();
+      game.active = false;
+    }
+
+    /* =========================================================
+       11. EVENT LISTENERS & AUTO-SCALE
+       ========================================================= */
+    document.getElementById('btn-start-play').addEventListener('click', () => {
+      sound.init();
+      openCalibration();
+    });
+
+    document.getElementById('btn-open-tutorial').addEventListener('click', () => {
+      openTutorial();
+    });
+
+    document.getElementById('btn-open-map').addEventListener('click', () => {
+      showWorldMap();
+    });
+
+    document.getElementById('btn-skip-calib').addEventListener('click', () => {
+      sound.playDing();
+      openTutorial();
+    });
+
+    document.getElementById('btn-cancel-calib').addEventListener('click', () => {
+      goToHome();
+    });
+
+    document.getElementById('btn-start-lvl1').addEventListener('click', () => {
+      sound.playDing();
+      startLevel(0);
+    });
+
+    document.getElementById('btn-next-world').addEventListener('click', () => {
+      sound.playDing();
+      startLevel(game.lvlIdx + 1);
+    });
+
+    document.getElementById('btn-audio').addEventListener('click', () => {
+      const isMuted = sound.toggleMute();
+      document.getElementById('btn-audio').textContent = isMuted ? '🔇' : '🔊';
+    });
+
+    document.getElementById('btn-fullscreen').addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    });
+
+    document.getElementById('sens-slider').addEventListener('input', (e) => {
+      game.sensitivity = parseInt(e.target.value, 10);
+      const labels = ["", "Rendah", "Sedang", "Tinggi"];
+      document.getElementById('sens-label').textContent = labels[game.sensitivity];
+    });
+
+    function fitScreen() {
+      const container = document.getElementById('game-container');
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const scale = Math.min(w / 1280, h / 720) * 0.98;
+      container.style.transform = `scale(${scale})`;
+    }
+
+    window.addEventListener('resize', fitScreen);
+    window.addEventListener('DOMContentLoaded', () => {
+      fitScreen();
+      renderLoop();
+    });
+  </script>
+</body>
+</html>
