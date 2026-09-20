@@ -312,7 +312,7 @@
       pointer-events: auto;
     }
 
-    /* Khusus Level 4: 2 Opsi Lebar (Kiri / Kanan) */
+    /* Khusus Level 4: 2 Opsi Lebar */
     .choices-grid-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -502,14 +502,14 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transform: scaleX(-1);
+      transform: scaleX(-1); /* MIRRORED VISUALLY */
       opacity: 0.85;
     }
     #cam-canvas {
       position: absolute;
       width: 100%;
       height: 100%;
-      transform: scaleX(-1);
+      transform: scaleX(-1); /* MIRRORED VISUALLY */
       pointer-events: none;
     }
     .cam-tag {
@@ -714,7 +714,7 @@
     <div id="lock-hud-pill">
       <span class="lock-pill-txt">Mengunci:</span>
       <span class="lock-pill-badge" id="lock-pill-letter">A</span>
-      <span style="font-family:'Lilita One'; font-size:18px; color:var(--gold);" id="lock-pill-countdown">(0.5s)</span>
+      <span style="font-family:'Lilita One'; font-size:18px; color:var(--gold);" id="lock-pill-countdown">(0.6s)</span>
     </div>
 
     <!-- Papan Soal -->
@@ -738,7 +738,7 @@
     <div id="numi-bar">
       <div class="numi-avatar">🤖</div>
       <div style="font-size:15px; font-weight:600; color:#E2F1FF; line-height:1.3;" id="numi-speech">
-        “Selamat datang di Number Blocks Adventure! Jaga 5 nyawamu sampai Level 5 ya!”
+        “Berdirilah di ZONA TENGAH (di antara dua garis kuning) untuk menjawab A atau B!”
       </div>
     </div>
 
@@ -746,7 +746,7 @@
     <div id="webcam-view">
       <video id="webcam-elem" autoplay playsinline muted></video>
       <canvas id="cam-canvas"></canvas>
-      <div class="cam-tag" id="cam-status">Sensor: Aktif</div>
+      <div class="cam-tag" id="cam-status">Sensor: Siap</div>
     </div>
 
     <!-- Start Modal -->
@@ -755,7 +755,7 @@
         <h1 class="main-logo">Number Blocks Adventure</h1>
         <p style="font-size:17px; color:#c7d8ff; margin-bottom:24px; line-height:1.5;">
           Taklukkan 5 Level Bilangan Cacah hingga 100.000!<br>
-          Gunakan gerakan tubuh (kunci kilat 0,5 detik) atau sentuh layar langsung.
+          Gunakan gerakan tubuh (kunci kilat 0,6 detik) atau sentuh layar langsung.
         </p>
         <div class="btn-column">
           <button class="btn-roblox yellow" id="btn-start">START</button>
@@ -782,7 +782,7 @@
     <div id="calib-overlay">
       <div class="calib-circle" id="calib-num">3</div>
       <h2 style="font-family:'Lilita One'; font-size:34px; color:#fff; letter-spacing:1px;">MENYIAPKAN SENSOR...</h2>
-      <p style="font-size:18px; color:var(--gold); margin-top:8px;">Berdiri santai menghadap kamera!</p>
+      <p style="font-size:18px; color:var(--gold); margin-top:8px;">Berdiri di tengah (di antara dua garis kuning)!</p>
     </div>
 
     <!-- Level Cleared Modal -->
@@ -802,7 +802,7 @@
       </div>
     </div>
 
-    <!-- Game Over Modal (Nyawa Habis) -->
+    <!-- Game Over Modal -->
     <div class="screen-layer" id="layer-game-over" style="display:none;">
       <div class="modal-box" style="border-color:var(--red);">
         <h1 class="main-logo" style="color:var(--red);">GAME OVER</h1>
@@ -816,7 +816,7 @@
       </div>
     </div>
 
-    <!-- Finish Modal (Juara Tamat Level 5) -->
+    <!-- Finish Modal -->
     <div class="screen-layer" id="layer-finish" style="display:none;">
       <div class="modal-box">
         <h1 class="main-logo" style="color:var(--gold);">SELAMAT!</h1>
@@ -838,7 +838,7 @@
 
   <script>
     /* =========================================================
-       1. DATA SOAL 5 LEVEL LENGKAP (BILANGAN CACAH S.D 100.000)
+       1. SOAL RESMI 5 LEVEL BILANGAN CACAH (HIKMAT FASE C)
        ========================================================= */
     const GAME_LEVELS = [
       {
@@ -849,57 +849,57 @@
         isTwoChoices: false,
         questions: [
           {
-            q: "Pada bilangan 78.415, angka 8 bernilai tempat ....",
-            sub: "Pilih opsi jawaban yang tepat!",
+            q: "Pada bilangan 78.415, angka 8 menempati nilai tempat ....",
+            sub: "Perhatikan letak angka dari digit belakang!",
             choices: [
               { key: "A", text: "Puluhan Ribu", hint: "🙋 Tangan Kiri Atas" },
               { key: "B", text: "Ribuan", hint: "🙋‍♂️ Tangan Kanan Atas" },
-              { key: "C", text: "Ratusan", hint: "🙆 Condong Kiri" },
-              { key: "D", text: "Puluhan", hint: "🙅 Condong Kanan" }
+              { key: "C", text: "Ratusan", hint: "🚶 Langkah Kiri" },
+              { key: "D", text: "Puluhan", hint: "🚶‍♂️ Langkah Kanan" }
             ],
             correct: "B"
           },
           {
             q: "Nilai angka 5 pada bilangan 52.340 adalah ....",
-            sub: "Perhatikan letak angka paling depan!",
+            sub: "Tentukan nilai bilangan dari angka 5!",
             choices: [
               { key: "A", text: "50.000", hint: "🙋 Tangan Kiri Atas" },
               { key: "B", text: "5.000", hint: "🙋‍♂️ Tangan Kanan Atas" },
-              { key: "C", text: "500", hint: "🙆 Condong Kiri" },
-              { key: "D", text: "50", hint: "🙅 Condong Kanan" }
+              { key: "C", text: "500", hint: "🚶 Langkah Kiri" },
+              { key: "D", text: "50", hint: "🚶‍♂️ Langkah Kanan" }
             ],
             correct: "A"
           },
           {
             q: "Pada bilangan 94.608, angka yang menempati nilai tempat ratusan adalah ....",
-            sub: "Hitung urutan nilai tempat dari belakang!",
+            sub: "Cermati letak digit ratusannya!",
             choices: [
               { key: "A", text: "4", hint: "🙋 Tangan Kiri Atas" },
               { key: "B", text: "0", hint: "🙋‍♂️ Tangan Kanan Atas" },
-              { key: "C", text: "6", hint: "🙆 Condong Kiri" },
-              { key: "D", text: "8", hint: "🙅 Condong Kanan" }
+              { key: "C", text: "6", hint: "🚶 Langkah Kiri" },
+              { key: "D", text: "8", hint: "🚶‍♂️ Langkah Kanan" }
             ],
             correct: "C"
           },
           {
             q: "Bilangan 40.207 dibaca ....",
-            sub: "Hati-hati dengan angka nol pada nilai tempatnya!",
+            sub: "Hati-hati dengan nilai tempat nol!",
             choices: [
               { key: "A", text: "Empat puluh ribu dua puluh tujuh", hint: "🙋 Tangan Kiri Atas" },
               { key: "B", text: "Empat ribu dua ratus tujuh", hint: "🙋‍♂️ Tangan Kanan Atas" },
-              { key: "C", text: "Empat puluh dua ribu tujuh", hint: "🙆 Condong Kiri" },
-              { key: "D", text: "Empat puluh ribu dua ratus tujuh", hint: "🙅 Condong Kanan" }
+              { key: "C", text: "Empat puluh dua ribu tujuh", hint: "🚶 Langkah Kiri" },
+              { key: "D", text: "Empat puluh ribu dua ratus tujuh", hint: "🚶‍♂️ Langkah Kanan" }
             ],
             correct: "D"
           },
           {
             q: "Angka 3 pada bilangan 31.890 menempati nilai tempat ....",
-            sub: "Tentukan nama nilai tempatnya!",
+            sub: "Periksa nilai tempat digit paling kiri!",
             choices: [
               { key: "A", text: "Puluhan Ribu", hint: "🙋 Tangan Kiri Atas" },
               { key: "B", text: "Ribuan", hint: "🙋‍♂️ Tangan Kanan Atas" },
-              { key: "C", text: "Ratusan Ribu", hint: "🙆 Condong Kiri" },
-              { key: "D", text: "Ratusan", hint: "🙅 Condong Kanan" }
+              { key: "C", text: "Ratusan Ribu", hint: "🚶 Langkah Kiri" },
+              { key: "D", text: "Ratusan", hint: "🚶‍♂️ Langkah Kanan" }
             ],
             correct: "A"
           }
@@ -914,34 +914,34 @@
         questions: [
           {
             q: "Urutan bilangan dari yang TERKECIL ke terbesar adalah ....",
-            sub: "Bandingkan angka mulai dari digit paling kiri!",
+            sub: "Bandingkan dari angka puluh ribuan ke belakang!",
             choices: [
               { key: "A", text: "21.500, 23.100, 22.400", hint: "🙋 Tangan Kiri Atas" },
               { key: "B", text: "21.500, 22.400, 23.100", hint: "🙋‍♂️ Tangan Kanan Atas" },
-              { key: "C", text: "23.100, 22.400, 21.500", hint: "🙆 Condong Kiri" },
-              { key: "D", text: "22.400, 21.500, 23.100", hint: "🙅 Condong Kanan" }
+              { key: "C", text: "23.100, 22.400, 21.500", hint: "🚶 Langkah Kiri" },
+              { key: "D", text: "22.400, 21.500, 23.100", hint: "🚶‍♂️ Langkah Kanan" }
             ],
             correct: "B"
           },
           {
             q: "Bilangan yang nilainya LEBIH BESAR dari 65.400 adalah ....",
-            sub: "Cari bilangan dengan nilai di atas 65.400!",
+            sub: "Cari nilai yang melampaui 65.400!",
             choices: [
               { key: "A", text: "65.390", hint: "🙋 Tangan Kiri Atas" },
               { key: "B", text: "64.999", hint: "🙋‍♂️ Tangan Kanan Atas" },
-              { key: "C", text: "65.450", hint: "🙆 Condong Kiri" },
-              { key: "D", text: "65.040", hint: "🙅 Condong Kanan" }
+              { key: "C", text: "65.450", hint: "🚶 Langkah Kiri" },
+              { key: "D", text: "65.040", hint: "🚶‍♂️ Langkah Kanan" }
             ],
             correct: "C"
           },
           {
             q: "Tanda yang tepat untuk 53.820 ... 53.790 adalah ....",
-            sub: "Bandingkan angka ratusan pada kedua bilangan!",
+            sub: "Bandingkan angka ratusannya!",
             choices: [
               { key: "A", text: "> (Lebih Dari)", hint: "🙋 Tangan Kiri Atas" },
               { key: "B", text: "< (Kurang Dari)", hint: "🙋‍♂️ Tangan Kanan Atas" },
-              { key: "C", text: "= (Sama Dengan)", hint: "🙆 Condong Kiri" },
-              { key: "D", text: "<= (Kurang / Sama)", hint: "🙅 Condong Kanan" }
+              { key: "C", text: "= (Sama Dengan)", hint: "🚶 Langkah Kiri" },
+              { key: "D", text: "<= (Kurang / Sama)", hint: "🚶‍♂️ Langkah Kanan" }
             ],
             correct: "A"
           },
@@ -951,19 +951,19 @@
             choices: [
               { key: "A", text: "87.000, 85.500, 89.200", hint: "🙋 Tangan Kiri Atas" },
               { key: "B", text: "85.500, 87.000, 89.200", hint: "🙋‍♂️ Tangan Kanan Atas" },
-              { key: "C", text: "89.200, 87.000, 85.500", hint: "🙆 Condong Kiri" },
-              { key: "D", text: "89.200, 85.500, 87.000", hint: "🙅 Condong Kanan" }
+              { key: "C", text: "89.200, 87.000, 85.500", hint: "🚶 Langkah Kiri" },
+              { key: "D", text: "89.200, 85.500, 87.000", hint: "🚶‍♂️ Langkah Kanan" }
             ],
             correct: "C"
           },
           {
-            q: "Di antara bilangan berikut, manakah yang paling kecil?",
-            sub: "Periksa ribuan dan ratusannya!",
+            q: "Di antara bilangan berikut, manakah yang nilainya PALING KECIL?",
+            sub: "Periksa nilai ribuan dan ratusannya!",
             choices: [
               { key: "A", text: "34.610", hint: "🙋 Tangan Kiri Atas" },
               { key: "B", text: "34.160", hint: "🙋‍♂️ Tangan Kanan Atas" },
-              { key: "C", text: "34.090", hint: "🙆 Condong Kiri" },
-              { key: "D", text: "34.900", hint: "🙅 Condong Kanan" }
+              { key: "C", text: "34.090", hint: "🚶 Langkah Kiri" },
+              { key: "D", text: "34.900", hint: "🚶‍♂️ Langkah Kanan" }
             ],
             correct: "C"
           }
@@ -978,34 +978,34 @@
         questions: [
           {
             q: "Bentuk panjang dari 64.305 adalah ....",
-            sub: "Perhatikan angka nol pada nilai puluhan!",
+            sub: "Cermati letak angka nol pada nilai puluhan!",
             choices: [
               { key: "A", text: "60.000 + 4.000 + 300 + 5", hint: "🙋 Tangan Kiri Atas" },
               { key: "B", text: "60.000 + 4.000 + 30 + 5", hint: "🙋‍♂️ Tangan Kanan Atas" },
-              { key: "C", text: "6.000 + 400 + 30 + 5", hint: "🙆 Condong Kiri" },
-              { key: "D", text: "60.000 + 400 + 300 + 5", hint: "🙅 Condong Kanan" }
+              { key: "C", text: "6.000 + 400 + 30 + 5", hint: "🚶 Langkah Kiri" },
+              { key: "D", text: "60.000 + 400 + 300 + 5", hint: "🚶‍♂️ Langkah Kanan" }
             ],
             correct: "A"
           },
           {
-            q: "70.000 + 5.000 + 800 + 20 + 9 sama dengan ....",
-            sub: "Gabungkan sesuai nilai tempatnya!",
+            q: "70.000 + 5.000 + 800 + 20 + 9 sama nilainya dengan ....",
+            sub: "Gabungkan setiap nilai tempatnya!",
             choices: [
               { key: "A", text: "75.289", hint: "🙋 Tangan Kiri Atas" },
               { key: "B", text: "75.829", hint: "🙋‍♂️ Tangan Kanan Atas" },
-              { key: "C", text: "75.892", hint: "🙆 Condong Kiri" },
-              { key: "D", text: "75.820", hint: "🙅 Condong Kanan" }
+              { key: "C", text: "75.892", hint: "🚶 Langkah Kiri" },
+              { key: "D", text: "75.820", hint: "🚶‍♂️ Langkah Kanan" }
             ],
             correct: "B"
           },
           {
             q: "Bilangan 90.410 jika didekomposisi menjadi ....",
-            sub: "Cermati angka yang bernilai nol!",
+            sub: "Perhatikan tempat ribuan bernilai 0!",
             choices: [
               { key: "A", text: "90.000 + 400 + 10", hint: "🙋 Tangan Kiri Atas" },
               { key: "B", text: "9.000 + 400 + 10", hint: "🙋‍♂️ Tangan Kanan Atas" },
-              { key: "C", text: "90.000 + 4.000 + 10", hint: "🙆 Condong Kiri" },
-              { key: "D", text: "90.000 + 40 + 10", hint: "🙅 Condong Kanan" }
+              { key: "C", text: "90.000 + 4.000 + 10", hint: "🚶 Langkah Kiri" },
+              { key: "D", text: "90.000 + 40 + 10", hint: "🚶‍♂️ Langkah Kanan" }
             ],
             correct: "A"
           },
@@ -1015,19 +1015,19 @@
             choices: [
               { key: "A", text: "83.006", hint: "🙋 Tangan Kiri Atas" },
               { key: "B", text: "80.360", hint: "🙋‍♂️ Tangan Kanan Atas" },
-              { key: "C", text: "80.306", hint: "🙆 Condong Kiri" },
-              { key: "D", text: "83.600", hint: "🙅 Condong Kanan" }
+              { key: "C", text: "80.306", hint: "🚶 Langkah Kiri" },
+              { key: "D", text: "83.600", hint: "🚶‍♂️ Langkah Kanan" }
             ],
             correct: "C"
           },
           {
             q: "Dekomposisi dari 42.750 adalah ....",
-            sub: "Periksa nilai ratusan dan puluhannya!",
+            sub: "Uraikan ke dalam bentuk panjang!",
             choices: [
               { key: "A", text: "40.000 + 2.000 + 700 + 50", hint: "🙋 Tangan Kiri Atas" },
               { key: "B", text: "40.000 + 200 + 70 + 5", hint: "🙋‍♂️ Tangan Kanan Atas" },
-              { key: "C", text: "4.000 + 2.000 + 700 + 50", hint: "🙆 Condong Kiri" },
-              { key: "D", text: "40.000 + 2.000 + 750", hint: "🙅 Condong Kanan" }
+              { key: "C", text: "4.000 + 2.000 + 700 + 50", hint: "🚶 Langkah Kiri" },
+              { key: "D", text: "40.000 + 2.000 + 750", hint: "🚶‍♂️ Langkah Kanan" }
             ],
             correct: "A"
           }
@@ -1037,15 +1037,15 @@
         level: 4,
         title: "LEVEL 4: OPERASI BILANGAN",
         shortTitle: "OPERASI",
-        timer: 45, // Waktu ekstra untuk berhitung
-        isTwoChoices: true, // 2 Opsi saja: Geser/Miring Badan Kiri (C) atau Kanan (D)
+        timer: 45, // Waktu ekstra
+        isTwoChoices: true, // 2 Opsi (Langkah Kiri/Kanan)
         questions: [
           {
             q: "Berapakah hasil dari 45.000 + 27.000 ?",
-            sub: "Geser/miring badan ke KIRI atau KANAN untuk memilih!",
+            sub: "Geser / langkahkan kaki ke KIRI atau KANAN!",
             choices: [
-              { key: "C", text: "72.000", hint: "🙆 Miring / Geser KIRI" },
-              { key: "D", text: "62.000", hint: "🙅 Miring / Geser KANAN" }
+              { key: "C", text: "72.000", hint: "🚶 Langkah KIRI" },
+              { key: "D", text: "62.000", hint: "🚶‍♂️ Langkah KANAN" }
             ],
             correct: "C"
           },
@@ -1053,26 +1053,26 @@
             q: "Berapakah hasil dari 80.000 - 35.000 ?",
             sub: "Hitung pengurangan dengan teliti!",
             choices: [
-              { key: "C", text: "55.000", hint: "🙆 Miring / Geser KIRI" },
-              { key: "D", text: "45.000", hint: "🙅 Miring / Geser KANAN" }
+              { key: "C", text: "55.000", hint: "🚶 Langkah KIRI" },
+              { key: "D", text: "45.000", hint: "🚶‍♂️ Langkah KANAN" }
             ],
             correct: "D"
           },
           {
             q: "Berapakah hasil dari (12.000 × 3) + 10.000 ?",
-            sub: "Dahulukan operasi perkalian!",
+            sub: "Selesaikan perkalian terlebih dahulu!",
             choices: [
-              { key: "C", text: "46.000", hint: "🙆 Miring / Geser KIRI" },
-              { key: "D", text: "36.000", hint: "🙅 Miring / Geser KANAN" }
+              { key: "C", text: "46.000", hint: "🚶 Langkah KIRI" },
+              { key: "D", text: "36.000", hint: "🚶‍♂️ Langkah KANAN" }
             ],
             correct: "C"
           },
           {
             q: "Berapakah hasil dari 50.000 - (15.000 × 2) ?",
-            sub: "Kalikan terlebih dahulu bilangan di dalam kurung!",
+            sub: "Kerjakan operasi dalam kurung lebih dulu!",
             choices: [
-              { key: "C", text: "30.000", hint: "🙆 Miring / Geser KIRI" },
-              { key: "D", text: "20.000", hint: "🙅 Miring / Geser KANAN" }
+              { key: "C", text: "30.000", hint: "🚶 Langkah KIRI" },
+              { key: "D", text: "20.000", hint: "🚶‍♂️ Langkah KANAN" }
             ],
             correct: "D"
           },
@@ -1080,8 +1080,8 @@
             q: "Berapakah hasil dari 63.000 + 17.000 ?",
             sub: "Jumlahkan kedua bilangan puluhan ribu!",
             choices: [
-              { key: "C", text: "80.000", hint: "🙆 Miring / Geser KIRI" },
-              { key: "D", text: "70.000", hint: "🙅 Miring / Geser KANAN" }
+              { key: "C", text: "80.000", hint: "🚶 Langkah KIRI" },
+              { key: "D", text: "70.000", hint: "🚶‍♂️ Langkah KANAN" }
             ],
             correct: "C"
           }
@@ -1089,63 +1089,63 @@
       },
       {
         level: 5,
-        title: "LEVEL 5 (PUNCAK): TANTANGAN SEMUA TOPIK",
+        title: "LEVEL 5 (PUNCAK): TANTANGAN GABUNGAN",
         shortTitle: "PUNCAK",
         timer: 35,
         isTwoChoices: false,
         questions: [
           {
             q: "[Nilai Tempat] Pada 83.250, selisih nilai angka 8 dan angka 3 adalah ....",
-            sub: "Nilai 80.000 dikurangi nilai 3.000!",
+            sub: "Kurangkan nilai 80.000 dengan 3.000!",
             choices: [
               { key: "A", text: "77.000", hint: "🙋 Tangan Kiri Atas" },
               { key: "B", text: "50.000", hint: "🙋‍♂️ Tangan Kanan Atas" },
-              { key: "C", text: "75.000", hint: "🙆 Condong Kiri" },
-              { key: "D", text: "5.000", hint: "🙅 Condong Kanan" }
+              { key: "C", text: "75.000", hint: "🚶 Langkah Kiri" },
+              { key: "D", text: "5.000", hint: "🚶‍♂️ Langkah Kanan" }
             ],
             correct: "A"
           },
           {
             q: "[Mengurutkan] Bilangan yang terletak tepat di antara 49.998 dan 50.000 adalah ....",
-            sub: "Perhatikan bilangan sebelum 50.000!",
+            sub: "Tentukan bilangan sebelum 50.000!",
             choices: [
               { key: "A", text: "49.997", hint: "🙋 Tangan Kiri Atas" },
               { key: "B", text: "49.999", hint: "🙋‍♂️ Tangan Kanan Atas" },
-              { key: "C", text: "50.001", hint: "🙆 Condong Kiri" },
-              { key: "D", text: "49.990", hint: "🙅 Condong Kanan" }
+              { key: "C", text: "50.001", hint: "🚶 Langkah Kiri" },
+              { key: "D", text: "49.990", hint: "🚶‍♂️ Langkah Kanan" }
             ],
             correct: "B"
           },
           {
-            q: "[Dekomposisi] Suatu bilangan tersusun atas 5 puluhan ribu, 2 ratusan, dan 4 satuan. Bilangan itu adalah ....",
-            sub: "Cermati nilai ribuan dan puluhan yang tidak ada (0)!",
+            q: "[Dekomposisi] Suatu bilangan tersusun dari 5 puluhan ribu, 2 ratusan, dan 4 satuan. Bilangan itu adalah ....",
+            sub: "Perhatikan nilai ribuan dan puluhan adalah 0!",
             choices: [
               { key: "A", text: "52.004", hint: "🙋 Tangan Kiri Atas" },
               { key: "B", text: "50.240", hint: "🙋‍♂️ Tangan Kanan Atas" },
-              { key: "C", text: "50.204", hint: "🙆 Condong Kiri" },
-              { key: "D", text: "52.400", hint: "🙅 Condong Kanan" }
+              { key: "C", text: "50.204", hint: "🚶 Langkah Kiri" },
+              { key: "D", text: "52.400", hint: "🚶‍♂️ Langkah Kanan" }
             ],
             correct: "C"
           },
           {
             q: "[Operasi] Toko memiliki 35.000 buku, lalu membeli lagi 25.000 buku dan terjual 40.000 buku. Sisa buku adalah ....",
-            sub: "Kerjakan penjumlahan lalu kurangkan!",
+            sub: "Jumlahkan lalu kurangkan buku yang terjual!",
             choices: [
               { key: "A", text: "20.000", hint: "🙋 Tangan Kiri Atas" },
               { key: "B", text: "30.000", hint: "🙋‍♂️ Tangan Kanan Atas" },
-              { key: "C", text: "15.000", hint: "🙆 Condong Kiri" },
-              { key: "D", text: "25.000", hint: "🙅 Condong Kanan" }
+              { key: "C", text: "15.000", hint: "🚶 Langkah Kiri" },
+              { key: "D", text: "25.000", hint: "🚶‍♂️ Langkah Kanan" }
             ],
             correct: "A"
           },
           {
             q: "[Tantangan Akhir] Hasil dari 100.000 - (20.000 × 3) + 5.000 adalah ....",
-            sub: "Selesaikan tantangan pamungkas ini!",
+            sub: "Selesaikan operasi perkalian terlebih dahulu!",
             choices: [
               { key: "A", text: "35.000", hint: "🙋 Tangan Kiri Atas" },
               { key: "B", text: "45.000", hint: "🙋‍♂️ Tangan Kanan Atas" },
-              { key: "C", text: "55.000", hint: "🙆 Condong Kiri" },
-              { key: "D", text: "40.000", hint: "🙅 Condong Kanan" }
+              { key: "C", text: "55.000", hint: "🚶 Langkah Kiri" },
+              { key: "D", text: "40.000", hint: "🚶‍♂️ Langkah Kanan" }
             ],
             correct: "B"
           }
@@ -1365,7 +1365,7 @@
     }
 
     /* =========================================================
-       4. GAME CONTROLLER UTUH (5 LEVEL, 5 NYAWA, 5 PIALA)
+       4. GAME CONTROLLER & SENSOR ZONA TENGAH EKSKLUSIF
        ========================================================= */
     class GameEngine {
       constructor() {
@@ -1382,8 +1382,8 @@
         this.timerInterval = null;
         this.isPaused = false;
 
-        // KUNCI JAWABAN KILAT 0.5 DETIK
-        this.holdRequired = 0.5;
+        // Kunci kilat 0.6 detik
+        this.holdRequired = 0.6;
         this.holdProgress = 0;
         this.lastHoldTimestamp = null;
 
@@ -1402,7 +1402,6 @@
       }
 
       bindEvents() {
-        // Tombol Start Tunggal
         document.getElementById('btn-start').addEventListener('click', () => {
           this.sound.init();
           this.startGame();
@@ -1521,8 +1520,8 @@
           modelComplexity: 0,
           smoothLandmarks: true,
           enableSegmentation: false,
-          minDetectionConfidence: 0.35,
-          minTrackingConfidence: 0.35
+          minDetectionConfidence: 0.4,
+          minTrackingConfidence: 0.4
         });
 
         this.pose.onResults((results) => this.onPoseResults(results));
@@ -1532,11 +1531,11 @@
             onFrame: async () => {
               if (this.pose && !this.isPaused) await this.pose.send({ image: this.videoElem });
             },
-            width: 640,
-            height: 480
+            width: 480,
+            height: 360
           });
           this.camera.start().then(() => {
-            camTag.textContent = 'Sensor: Aktif ✅';
+            camTag.textContent = 'Sensor: Cepat ✅';
           }).catch(err => {
             camTag.textContent = 'Kamera Ditolak';
             console.warn(err);
@@ -1545,12 +1544,15 @@
       }
 
       /* =========================================================
-         DETEKSI KILAT & JELI (0.5 DETIK)
+         DETEKSI EKSKLUSIF: ZONA TENGAH vs GESER KIRI/KANAN
          ========================================================= */
       onPoseResults(results) {
         this.camCanvas.width = this.videoElem.videoWidth || 320;
         this.camCanvas.height = this.videoElem.videoHeight || 240;
         this.camCtx.clearRect(0, 0, this.camCanvas.width, this.camCtx.height);
+
+        // Gambar Garis Panduan Zona Tengah di Kamera PIP
+        this.drawZoneLines();
 
         if (this.isPaused || this.isProcessingAnswer || !results.poseLandmarks) {
           this.resetHoldState();
@@ -1561,8 +1563,6 @@
         const nose = lm[0];
         const leftShoulder = lm[11];
         const rightShoulder = lm[12];
-        const leftElbow = lm[13];
-        const rightElbow = lm[14];
         const leftWrist = lm[15];
         const rightWrist = lm[16];
 
@@ -1574,45 +1574,59 @@
         this.drawSkeletonPIP(lm);
 
         const currentLvl = GAME_LEVELS[this.currentLevelIdx];
-
-        // LOGIKA LEVEL 4: KHUSUS 2 OPSI (C & D) - HANYA GESER/MIRING BADAN
-        if (currentLvl.isTwoChoices) {
-          const shoulderMidX = (leftShoulder.x + rightShoulder.x) / 2;
-          const tiltX = nose.x - shoulderMidX;
-
-          let detectedKey = null;
-          if (tiltX > 0.055) {
-            detectedKey = 'C'; // Geser / Miring Kiri
-          } else if (tiltX < -0.055) {
-            detectedKey = 'D'; // Geser / Miring Kanan
-          }
-
-          this.processHoldLogic(detectedKey);
-          return;
-        }
-
-        // LOGIKA LEVEL 1, 2, 3, 5: 4 OPSI (A, B, C, D)
-        const shoulderLevelY = (leftShoulder.y + rightShoulder.y) / 2;
-        const triggerY = shoulderLevelY + 0.05;
-
-        const isLeftHandUp = (leftWrist && leftWrist.y < triggerY) || (leftElbow && leftElbow.y < shoulderLevelY);
-        const isRightHandUp = (rightWrist && rightWrist.y < triggerY) || (rightElbow && rightElbow.y < shoulderLevelY);
-
-        const shoulderMidX = (leftShoulder.x + rightShoulder.x) / 2;
-        const tiltX = nose.x - shoulderMidX;
+        
+        // 1. Tentukan Titik Pusat Badan Pemain (X koordinat)
+        const bodyCenterX = (leftShoulder.x + rightShoulder.x) / 2;
 
         let detectedKey = null;
-        if (isLeftHandUp && !isRightHandUp) {
-          detectedKey = 'A'; // Tangan kiri diangkat
-        } else if (isRightHandUp && !isLeftHandUp) {
-          detectedKey = 'B'; // Tangan kanan diangkat
-        } else if (tiltX > 0.065) {
-          detectedKey = 'C'; // Miring badan kiri
-        } else if (tiltX < -0.065) {
-          detectedKey = 'D'; // Miring badan kanan
+
+        // MEDIA PIPE MIRROR LOGIC:
+        // Jika bodyCenterX > 0.60 -> Fisik melangkah ke Kiri (Tampil di kiri layar)
+        // Jika bodyCenterX < 0.40 -> Fisik melangkah ke Kanan (Tampil di kanan layar)
+        const isMovedLeft = bodyCenterX > 0.60;
+        const isMovedRight = bodyCenterX < 0.40;
+        const isInCenterZone = !isMovedLeft && !isMovedRight;
+
+        if (currentLvl.isTwoChoices) {
+          // LEVEL 4 HANYA DETEKSI GESER BADAN
+          if (isMovedLeft) detectedKey = 'C';
+          else if (isMovedRight) detectedKey = 'D';
+        } else {
+          // LEVEL 1, 2, 3, 5: 4 OPSI
+          if (isMovedLeft) {
+            detectedKey = 'C'; // Langkah Kiri
+          } else if (isMovedRight) {
+            detectedKey = 'D'; // Langkah Kanan
+          } else if (isInCenterZone) {
+            // HANYA BISA DETEKSI TANGAN A & B JIKA BERDIRI DI ZONA TENGAH (Anti-Overlap)
+            const triggerY = ((leftShoulder.y + rightShoulder.y) / 2) + 0.05;
+            const isLeftHandUp = (leftWrist && leftWrist.y < triggerY && leftWrist.visibility > 0.4);
+            const isRightHandUp = (rightWrist && rightWrist.y < triggerY && rightWrist.visibility > 0.4);
+
+            if (isLeftHandUp && !isRightHandUp) {
+              detectedKey = 'A';
+            } else if (isRightHandUp && !isLeftHandUp) {
+              detectedKey = 'B';
+            }
+          }
         }
 
         this.processHoldLogic(detectedKey);
+      }
+
+      drawZoneLines() {
+        const ctx = this.camCtx;
+        const w = this.camCanvas.width;
+        const h = this.camCanvas.height;
+
+        ctx.strokeStyle = 'rgba(255, 209, 36, 0.4)'; // Kuning Transparan
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        // Garis Kiri
+        ctx.moveTo(w * 0.4, 0); ctx.lineTo(w * 0.4, h);
+        // Garis Kanan
+        ctx.moveTo(w * 0.6, 0); ctx.lineTo(w * 0.6, h);
+        ctx.stroke();
       }
 
       drawSkeletonPIP(landmarks) {
@@ -1621,7 +1635,7 @@
         const h = this.camCanvas.height;
 
         ctx.fillStyle = '#00FF88';
-        [0, 11, 12, 13, 14, 15, 16].forEach(idx => {
+        [0, 11, 12, 15, 16].forEach(idx => {
           const pt = landmarks[idx];
           if (pt && pt.visibility > 0.3) {
             ctx.beginPath();
@@ -1730,7 +1744,7 @@
 
           this.triggerConfetti();
           this.showFeedback("✅ JAWABAN TEPAT!", `+${roundScore} Poin`, false);
-          this.setNumiSpeech(`Bagus sekali! Pertanyaan ${this.currentQIdx + 1} berhasil dijawab!`);
+          this.setNumiSpeech(`Bagus sekali! Pertanyaan ${this.currentQIdx + 1} terjawab benar!`);
         } else {
           this.sound.playWrong();
           this.lives--;
@@ -1740,24 +1754,21 @@
           if (correctCard) correctCard.classList.add('correct');
 
           this.showFeedback("❌ KURANG TEPAT!", `Kunci: (${currentQ.correct}) • Nyawa -1`, true);
-          this.setNumiSpeech(`Hati-hati, nyawamu berkurang satu! Tetap fokus!`);
+          this.setNumiSpeech(`Tetap tenang dan fokus untuk pertanyaan berikutnya!`);
         }
 
         this.updateHUD();
 
         setTimeout(() => {
-          // Periksa apakah nyawa habis
           if (this.lives <= 0) {
             this.handleGameOver();
             return;
           }
 
           this.currentQIdx++;
-          // Jika masih ada soal dalam level ini
           if (this.currentQIdx < currentLvl.questions.length) {
             this.loadQuestion();
           } else {
-            // Level Selesai -> Dapatkan Piala
             this.handleLevelCleared();
           }
         }, 1600);
@@ -1769,13 +1780,11 @@
         this.triggerConfetti();
         this.updateHUD();
 
-        // Jika tamat Level 5
         if (this.currentLevelIdx >= GAME_LEVELS.length - 1) {
           this.finishGame();
           return;
         }
 
-        // Tampilkan modal selesai level
         document.getElementById('clear-level-msg').textContent = `KAMU MEMPEROLEH PIALA KE-${this.trophies}!`;
         document.getElementById('clear-level-desc').textContent = `Kamu berhasil menyelesaikan ${GAME_LEVELS[this.currentLevelIdx].title}!`;
         document.getElementById('layer-level-clear').style.display = 'flex';
