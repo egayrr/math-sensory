@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NUMBER BLOCKS ADVENTURE</title>
+  <title>Number Blocks Adventure</title>
   
   <!-- MediaPipe Pose via CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
@@ -404,7 +404,7 @@
       width: 0%;
       background: linear-gradient(90deg, #FFD124, #00FF88);
       box-shadow: 0 0 10px #FFD124;
-      transition: width 0.08s linear;
+      transition: width 0.05s linear;
     }
 
     #toast-feedback {
@@ -534,48 +534,39 @@
       border: 5px solid #485b88;
       border-radius: 28px;
       box-shadow: 0 16px 40px rgba(0,0,0,0.7);
-      padding: 32px 44px;
-      max-width: 840px;
+      padding: 36px 48px;
+      max-width: 720px;
       width: 90%;
       position: relative;
     }
 
     .main-logo {
       font-family: 'Lilita One', cursive;
-      font-size: 52px;
+      font-size: 56px;
       color: var(--gold);
       line-height: 1.1;
       text-shadow: 4px 5px 0 #0c1220, 0 0 30px rgba(255, 209, 36, 0.5);
       letter-spacing: 1.5px;
-    }
-
-    .main-sub {
-      font-family: 'Lilita One', cursive;
-      font-size: 22px;
-      color: #00D2FF;
-      margin-top: 6px;
       margin-bottom: 20px;
-      letter-spacing: 2px;
-      text-shadow: 2px 2px 0 #000;
     }
 
     .btn-column {
       display: flex;
       flex-direction: column;
       gap: 14px;
-      width: 400px;
+      width: 320px;
       margin: 0 auto;
     }
 
     .btn-roblox {
       font-family: 'Lilita One', cursive;
-      font-size: 22px;
+      font-size: 26px;
       letter-spacing: 1px;
       color: #FFFFFF;
       background: linear-gradient(180deg, #00A3FF 0%, #0066CC 100%);
       border: none;
       border-radius: 16px;
-      padding: 14px 24px;
+      padding: 16px 24px;
       cursor: pointer;
       box-shadow: 0 8px 0 #004488, 0 12px 20px rgba(0,0,0,0.4);
       transition: all 0.15s ease;
@@ -607,7 +598,7 @@
       background: linear-gradient(180deg, #3d4a6c 0%, #262f47 100%);
       box-shadow: 0 6px 0 #171c2b;
       font-size: 19px;
-      padding: 10px 20px;
+      padding: 12px 20px;
     }
 
     /* Modal Pause */
@@ -697,9 +688,9 @@
 
     <!-- Lock In Indicator -->
     <div id="lock-hud-pill">
-      <span class="lock-pill-txt">Mengunci:</span>
+      <span class="lock-pill-txt">Mengunci Jawaban:</span>
       <span class="lock-pill-badge" id="lock-pill-letter">A</span>
-      <span style="font-family:'Lilita One'; font-size:18px; color:var(--gold);" id="lock-pill-countdown">(1.6s)</span>
+      <span style="font-family:'Lilita One'; font-size:18px; color:var(--gold);" id="lock-pill-countdown">(2.0s)</span>
     </div>
 
     <!-- Papan Soal -->
@@ -707,7 +698,7 @@
       <div class="q-box">
         <div class="q-badge" id="q-topic">MEMBACA & MENULIS BILANGAN CACAH</div>
         <div class="q-main" id="q-text">Bilangan yang dibaca "tiga puluh lima ribu dua ratus delapan" adalah ....</div>
-        <div class="q-desc" id="q-sub">Angkat tangan tinggi melewati kepala untuk memilih A atau B!</div>
+        <div class="q-desc" id="q-sub">Pilih opsi dan tahan pose tubuhmu selama 2 detik untuk mengunci jawaban!</div>
       </div>
 
       <div class="choices-grid-4" id="choices-box"></div>
@@ -723,7 +714,7 @@
     <div id="numi-bar">
       <div class="numi-avatar">🤖</div>
       <div style="font-size:15px; font-weight:600; color:#E2F1FF; line-height:1.3;" id="numi-speech">
-        “Angkat tanganmu tinggi sampai melewati hidung untuk mengunci jawaban ya!”
+        “Tahan posemu mantap-mantap selama 2 detik ya. Kalau kembali tegak, pilihan batal terkunci!”
       </div>
     </div>
 
@@ -731,20 +722,15 @@
     <div id="webcam-view">
       <video id="webcam-elem" autoplay playsinline muted></video>
       <canvas id="cam-canvas"></canvas>
-      <div class="cam-tag" id="cam-status">Kamera: Mencari Pemain...</div>
+      <div class="cam-tag" id="cam-status">Kamera: Menghubungkan...</div>
     </div>
 
     <!-- Start Modal -->
     <div class="screen-layer" id="layer-start">
       <div class="modal-box">
-        <h1 class="main-logo">NUMBER BLOCKS<br>ADVENTURE</h1>
-        <div class="main-sub">EDISI KHUSUS LAYAR BESAR (IFP)</div>
-        <p style="font-size: 17px; color: #c4d7ff; margin-bottom: 22px; line-height: 1.5;">
-          Gunakan gerakan tubuh! Angkat tangan tinggi-tinggi atau condongkan tubuh ke samping untuk memilih balok jawaban yang benar.
-        </p>
+        <h1 class="main-logo">Number Blocks Adventure</h1>
         <div class="btn-column">
-          <button class="btn-roblox yellow" id="btn-play-motion">🎮 MULAI SENSOR GERAK IFP</button>
-          <button class="btn-roblox secondary" id="btn-play-mouse">👆 MODE SENTUH SAJA</button>
+          <button class="btn-roblox yellow" id="btn-start">START</button>
         </div>
       </div>
     </div>
@@ -752,14 +738,14 @@
     <!-- Pause / Ganti Pemain Modal -->
     <div class="screen-layer" id="layer-pause">
       <div class="modal-box pause-box">
-        <h1 class="main-logo" style="color:var(--gold);">NUMBER BLOCKS ADVENTURE</h1>
-        <div class="main-sub">PERMAINAN DIJEDA • GILIRAN GANTI SISWA</div>
+        <h1 class="main-logo" style="color:var(--gold);">Number Blocks Adventure</h1>
+        <div style="font-family:'Lilita One'; font-size:22px; color:#00D2FF; margin-bottom:18px;">PERMAINAN DIJEDA • GANTI PEMAIN</div>
         <p style="font-size: 17px; color: #c4d7ff; margin-bottom: 24px; line-height: 1.5;">
-          Silakan siswa berikutnya maju ke depan. Tekan tombol di bawah untuk mengunci pemain baru!
+          Silakan pemain baru bersiap di depan kamera. Klik tombol di bawah untuk melanjutkan!
         </p>
         <div class="btn-column">
-          <button class="btn-roblox green" id="btn-resume-player">✅ PEMAIN BARU SUDAH SIAP!</button>
-          <button class="btn-roblox secondary" id="btn-restart-game">🔄 ULANGI LEVEL DARI AWAL</button>
+          <button class="btn-roblox green" id="btn-resume-player">SIAP MAIN!</button>
+          <button class="btn-roblox secondary" id="btn-restart-game">ULANG DARI AWAL</button>
         </div>
       </div>
     </div>
@@ -767,21 +753,21 @@
     <!-- Kalibrasi Giliran Baru Overlay -->
     <div id="calib-overlay">
       <div class="calib-circle" id="calib-num">3</div>
-      <h2 style="font-family:'Lilita One'; font-size:36px; color:#fff; letter-spacing:1px;">MENGUNCI PEMAIN BARU...</h2>
-      <p style="font-size:18px; color:var(--gold); margin-top:8px;">Silakan berdiri tegak di tengah depan kamera!</p>
+      <h2 style="font-family:'Lilita One'; font-size:36px; color:#fff; letter-spacing:1px;">MENYIAPKAN SENSOR...</h2>
+      <p style="font-size:18px; color:var(--gold); margin-top:8px;">Berdirilah dengan posisi tegak santai!</p>
     </div>
 
     <!-- Finish Modal -->
     <div class="screen-layer" id="layer-finish" style="display:none;">
       <div class="modal-box">
         <h1 class="main-logo" style="color:#00E676;">QUEST COMPLETE!</h1>
-        <div class="main-sub" id="finish-grade">PANGKAT: MASTER MATEMATIKA</div>
+        <div style="font-family:'Lilita One'; font-size:22px; color:#00D2FF; margin-bottom:12px;" id="finish-grade">PANGKAT: MASTER MATEMATIKA</div>
         <div style="font-size: 26px; color: #fff; margin: 15px 0;">
           Skor Akhir: <span class="score-hl" id="finish-score">0</span>
         </div>
         <p style="font-size: 16px; color: #A8C6FF; margin-bottom: 24px;" id="finish-stats">Total Kristal: 5/5</p>
         <div class="btn-column">
-          <button class="btn-roblox green" id="btn-restart">🔄 MAIN LAGI</button>
+          <button class="btn-roblox green" id="btn-restart">MAIN LAGI</button>
         </div>
       </div>
     </div>
@@ -790,7 +776,7 @@
 
   <script>
     /* =========================================================
-       1. DATA SOAL BILANGAN CACAH KELAS 5
+       1. DATA SOAL
        ========================================================= */
     const QUESTION_BANK = [
       {
@@ -856,7 +842,7 @@
     ];
 
     /* =========================================================
-       2. SFX AUDIO ENGINE (Web Audio API)
+       2. SFX AUDIO ENGINE
        ========================================================= */
     class SoundEngine {
       constructor() {
@@ -879,7 +865,7 @@
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(340 + (progress * 480), this.ctx.currentTime);
+        osc.frequency.setValueAtTime(320 + (progress * 420), this.ctx.currentTime);
         gain.gain.setValueAtTime(0.04, this.ctx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.08);
         osc.connect(gain);
@@ -1053,7 +1039,7 @@
     }
 
     /* =========================================================
-       4. GAME ENGINE & DETEKSI POSE DENGAN DEADZONE
+       4. GAME ENGINE & DETEKSI SENSOR AKURAT
        ========================================================= */
     class GameEngine {
       constructor() {
@@ -1068,15 +1054,18 @@
         this.timerInterval = null;
         this.isPaused = false;
 
-        // Waktu tahan 1.6 detik agar tidak mudah terkunci otomatis
-        this.holdRequired = 1.6;
+        // Wajib tahan pose 2.0 detik penuh (detik nyata, bukan frame)
+        this.holdRequired = 2.0;
+        this.holdProgress = 0;
+        this.lastHoldTimestamp = null;
 
         this.currentHoldingKey = null;
-        this.holdProgress = 0;
         this.isProcessingAnswer = false;
 
-        this.smoothedKey = null;
-        this.consecutiveFrames = 0;
+        // Filter kestabilan pose
+        this.candidateKey = null;
+        this.candidateCount = 0;
+        this.stableKey = null;
 
         this.videoElem = document.getElementById('webcam-elem');
         this.camCanvas = document.getElementById('cam-canvas');
@@ -1090,16 +1079,10 @@
       }
 
       bindEvents() {
-        document.getElementById('btn-play-motion').addEventListener('click', () => {
+        document.getElementById('btn-start').addEventListener('click', () => {
           this.sound.init();
           this.startGame();
           this.initMediaPipe();
-        });
-
-        document.getElementById('btn-play-mouse').addEventListener('click', () => {
-          this.sound.init();
-          document.getElementById('cam-status').textContent = 'Mode Sentuh Aktif';
-          this.startGame();
         });
 
         document.getElementById('btn-restart').addEventListener('click', () => {
@@ -1146,7 +1129,7 @@
         if (this.isProcessingAnswer) return;
         this.isPaused = true;
         clearInterval(this.timerInterval);
-        this.updateHoldProgress(null);
+        this.resetHoldState();
         document.getElementById('layer-pause').style.display = 'flex';
       }
 
@@ -1167,18 +1150,18 @@
             clearInterval(calibTimer);
             calibOverlay.style.display = 'none';
             this.isPaused = false;
+            this.resetHoldState();
             this.startTimer();
-            this.setNumiSpeech("Sensor siap! Pemain baru sudah aktif terkunci.");
           }
         }, 1000);
       }
 
       initMediaPipe() {
         const camTag = document.getElementById('cam-status');
-        camTag.textContent = 'Memuat Sensor AI...';
+        camTag.textContent = 'Memuat AI Sensor...';
 
         if (typeof Pose === 'undefined') {
-          camTag.textContent = 'Gunakan Touchscreen';
+          camTag.textContent = 'Gunakan Sentuh / Keyboard';
           return;
         }
 
@@ -1190,8 +1173,8 @@
           modelComplexity: 0,
           smoothLandmarks: true,
           enableSegmentation: false,
-          minDetectionConfidence: 0.45,
-          minTrackingConfidence: 0.45
+          minDetectionConfidence: 0.5,
+          minTrackingConfidence: 0.5
         });
 
         this.pose.onResults((results) => this.onPoseResults(results));
@@ -1207,7 +1190,7 @@
           this.camera.start().then(() => {
             camTag.textContent = 'Sensor Aktif ✅';
           }).catch(err => {
-            camTag.textContent = 'Akses Kamera Ditolak';
+            camTag.textContent = 'Kamera Ditolak';
             console.warn(err);
           });
         }
@@ -1219,57 +1202,61 @@
         this.camCtx.clearRect(0, 0, this.camCanvas.width, this.camCtx.height);
 
         if (this.isPaused || this.isProcessingAnswer || !results.poseLandmarks) {
-          if (!this.isProcessingAnswer) this.updateHoldProgress(null);
+          this.resetHoldState();
           return;
         }
 
         const lm = results.poseLandmarks;
-
         const nose = lm[0];
+        const leftEye = lm[2];
+        const rightEye = lm[5];
         const leftShoulder = lm[11];
         const rightShoulder = lm[12];
         const leftWrist = lm[15];
         const rightWrist = lm[16];
 
         if (!nose || !leftShoulder || !rightShoulder) {
-          this.updateHoldProgress(null);
+          this.resetHoldState();
           return;
         }
 
         this.drawSkeletonPIP(lm);
 
-        // 1. ANGKAT TANGAN: Pergelangan tangan harus naik tinggi melewati hidung
-        const isLeftUp = (leftWrist && leftWrist.y < nose.y - 0.03 && leftWrist.visibility > 0.45);
-        const isRightUp = (rightWrist && rightWrist.y < nose.y - 0.03 && rightWrist.visibility > 0.45);
+        // Batas angkat tangan: Wajib naik melampaui mata / dahi (tidak memicu saat tangan di meja)
+        const eyeLevelY = (leftEye && rightEye) ? (leftEye.y + rightEye.y) / 2 : (nose.y - 0.04);
+        const isLeftUp = (leftWrist && leftWrist.y < eyeLevelY && leftWrist.visibility > 0.5);
+        const isRightUp = (rightWrist && rightWrist.y < eyeLevelY && rightWrist.visibility > 0.5);
 
-        // 2. CONDONG BADAN: Memakai deadzone yang jelas agar posisi santai tidak terdeteksi
+        // Ambang batas condong badan: Deadzone besar agar gerak santai tidak terpicu
         const shoulderMidX = (leftShoulder.x + rightShoulder.x) / 2;
         const tiltX = nose.x - shoulderMidX;
 
-        let rawKey = null;
+        let detectedKey = null;
         if (isLeftUp && !isRightUp) {
-          rawKey = 'A';
+          detectedKey = 'A';
         } else if (isRightUp && !isLeftUp) {
-          rawKey = 'B';
-        } else if (tiltX > 0.075) {
-          rawKey = 'C'; // Miring jelas ke kiri
-        } else if (tiltX < -0.075) {
-          rawKey = 'D'; // Miring jelas ke kanan
+          detectedKey = 'B';
+        } else if (tiltX > 0.09) {
+          detectedKey = 'C'; // Miring jelas ke kiri
+        } else if (tiltX < -0.09) {
+          detectedKey = 'D'; // Miring jelas ke kanan
         }
 
-        // 3. Harus stabil selama 4 frame sebelum mulai mengisi meter penguncian
-        if (rawKey && rawKey === this.smoothedKey) {
-          this.consecutiveFrames++;
+        // Filter kandidat: Pose harus dipertahankan minimal 4 frame sebelum mulai pengisian waktu
+        if (detectedKey && detectedKey === this.candidateKey) {
+          this.candidateCount++;
         } else {
-          this.smoothedKey = rawKey;
-          this.consecutiveFrames = 0;
+          this.candidateKey = detectedKey;
+          this.candidateCount = 1;
         }
 
-        if (this.consecutiveFrames >= 4) {
-          this.updateHoldProgress(this.smoothedKey);
-        } else if (!rawKey) {
-          this.updateHoldProgress(null);
+        if (this.candidateCount >= 4) {
+          this.stableKey = this.candidateKey;
+        } else if (!detectedKey) {
+          this.stableKey = null;
         }
+
+        this.processHoldLogic(this.stableKey);
       }
 
       drawSkeletonPIP(landmarks) {
@@ -1299,41 +1286,57 @@
         }
       }
 
-      updateHoldProgress(key) {
-        const lockPill = document.getElementById('lock-hud-pill');
-        const lockLetter = document.getElementById('lock-pill-letter');
-        const lockCountdown = document.getElementById('lock-pill-countdown');
+      /* Logika Penahanan Berbasis Waktu Nyata (Batal otomatis jika lepas pose) */
+      processHoldLogic(key) {
+        const now = performance.now();
 
         if (!key) {
-          this.currentHoldingKey = null;
-          this.holdProgress = 0;
-          this.updateMeters(null, 0);
-          lockPill.classList.remove('show');
+          this.resetHoldState();
           return;
         }
 
         if (this.currentHoldingKey !== key) {
           this.currentHoldingKey = key;
           this.holdProgress = 0;
+          this.lastHoldTimestamp = now;
           this.world.updateAvatarPos(key);
         }
 
-        // Tambah progres penahanan
-        this.holdProgress += 0.033;
-        const ratio = Math.min(this.holdProgress / this.holdRequired, 1.0);
+        if (!this.lastHoldTimestamp) {
+          this.lastHoldTimestamp = now;
+        }
 
+        // Hitung pertambahan waktu dalam detik nyata
+        const dt = (now - this.lastHoldTimestamp) / 1000;
+        this.lastHoldTimestamp = now;
+        this.holdProgress += dt;
+
+        const ratio = Math.min(this.holdProgress / this.holdRequired, 1.0);
         this.updateMeters(key, ratio);
         this.sound.playLockTick(ratio);
+
+        const lockPill = document.getElementById('lock-hud-pill');
+        const lockLetter = document.getElementById('lock-pill-letter');
+        const lockCountdown = document.getElementById('lock-pill-countdown');
 
         lockPill.classList.add('show');
         lockLetter.textContent = key;
         const remainSec = Math.max(0, this.holdRequired - this.holdProgress).toFixed(1);
         lockCountdown.textContent = `(${remainSec}s)`;
 
+        // Kunci jika sudah genap 2 detik
         if (this.holdProgress >= this.holdRequired) {
-          lockPill.classList.remove('show');
+          this.resetHoldState();
           this.commitAnswer(key);
         }
+      }
+
+      resetHoldState() {
+        this.currentHoldingKey = null;
+        this.holdProgress = 0;
+        this.lastHoldTimestamp = null;
+        this.updateMeters(null, 0);
+        document.getElementById('lock-hud-pill').classList.remove('show');
       }
 
       updateMeters(activeKey, ratio) {
@@ -1352,6 +1355,7 @@
 
       handleDirectSelect(key) {
         if (this.isProcessingAnswer || this.isPaused) return;
+        this.resetHoldState();
         this.world.updateAvatarPos(key);
         this.commitAnswer(key);
       }
@@ -1414,8 +1418,7 @@
 
       loadQuestion() {
         this.isProcessingAnswer = false;
-        this.holdProgress = 0;
-        this.currentHoldingKey = null;
+        this.resetHoldState();
         this.timer = this.maxTimer;
 
         const q = QUESTION_BANK[this.currentQIdx];
