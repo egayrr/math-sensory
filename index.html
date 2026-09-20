@@ -64,13 +64,13 @@
       z-index: 1;
     }
 
-    /* HUD */
+    /* Top HUD */
     #hud {
       position: absolute;
-      top: 12px;
-      left: 20px;
-      right: 20px;
-      height: 70px;
+      top: 10px;
+      left: 16px;
+      right: 16px;
+      height: 72px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -83,30 +83,29 @@
       border: 3px solid var(--border);
       box-shadow: 0 6px 0 #0d121f;
       border-radius: 16px;
-      padding: 8px 16px;
+      padding: 6px 14px;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       pointer-events: auto;
       backdrop-filter: blur(6px);
     }
 
     .lvl-label {
       font-family: 'Lilita One', cursive;
-      font-size: 24px;
+      font-size: 22px;
       color: var(--gold);
       text-shadow: 2px 2px 0 #000;
-      letter-spacing: 0.5px;
     }
 
     .progress-track {
       display: flex;
-      gap: 6px;
+      gap: 5px;
     }
     .p-block {
-      width: 22px;
-      height: 18px;
-      border-radius: 6px;
+      width: 18px;
+      height: 16px;
+      border-radius: 5px;
       background: #25314d;
       border: 2px solid #3c4f79;
       transition: all 0.3s;
@@ -114,7 +113,7 @@
     .p-block.done {
       background: var(--green);
       border-color: #8cffc7;
-      box-shadow: 0 0 10px rgba(0, 210, 106, 0.7);
+      box-shadow: 0 0 8px rgba(0, 210, 106, 0.7);
     }
     .p-block.active {
       background: var(--gold);
@@ -122,19 +121,34 @@
       transform: scale(1.15);
     }
 
+    .lives-badge {
+      display: flex;
+      gap: 3px;
+      font-size: 20px;
+    }
+
+    .trophy-badge {
+      font-family: 'Lilita One', cursive;
+      font-size: 20px;
+      color: var(--gold);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
     .timer-card {
       background: rgba(18, 25, 42, 0.95);
       border: 3px solid var(--gold);
       box-shadow: 0 6px 0 #0d121f;
       border-radius: 16px;
-      padding: 6px 16px;
+      padding: 6px 14px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       pointer-events: auto;
     }
     .timer-icon {
-      font-size: 24px;
+      font-size: 22px;
       animation: pulseClock 1s infinite alternate;
     }
     @keyframes pulseClock {
@@ -143,10 +157,9 @@
     }
     .timer-num {
       font-family: 'Lilita One', cursive;
-      font-size: 30px;
+      font-size: 28px;
       color: var(--gold);
-      letter-spacing: 1px;
-      min-width: 44px;
+      min-width: 38px;
       text-align: center;
     }
     .timer-card.danger {
@@ -159,43 +172,33 @@
 
     .hud-txt {
       font-family: 'Lilita One', cursive;
-      font-size: 22px;
+      font-size: 20px;
       color: #fff;
-      text-shadow: 2px 2px 0 #000;
     }
     .score-hl {
       color: var(--gold);
-      font-size: 26px;
-    }
-
-    .crystal-badge {
-      font-family: 'Lilita One', cursive;
-      font-size: 20px;
-      color: #7ce7ff;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      font-size: 24px;
     }
 
     .hud-btn {
       background: #232e47;
       border: 2px solid #4a5f8f;
       color: #fff;
-      height: 44px;
+      height: 42px;
       border-radius: 12px;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 700;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      padding: 0 14px;
+      gap: 5px;
+      padding: 0 12px;
       cursor: pointer;
       box-shadow: 0 4px 0 #101624;
       pointer-events: auto;
     }
     .hud-btn:active {
-      transform: translateY(3px);
+      transform: translateY(2px);
       box-shadow: 0 1px 0 #101624;
     }
     .hud-btn.btn-pause {
@@ -232,7 +235,6 @@
       font-family: 'Lilita One', cursive;
       font-size: 18px;
       color: #FFF;
-      letter-spacing: 0.5px;
     }
     .lock-pill-badge {
       background: var(--gold);
@@ -243,10 +245,10 @@
       padding: 2px 10px;
     }
 
-    /* Papan Soal */
+    /* Quiz Board */
     #quiz-board {
       position: absolute;
-      top: 120px;
+      top: 114px;
       left: 0;
       width: 100%;
       display: flex;
@@ -262,11 +264,11 @@
       border: 4px solid #4b6294;
       border-radius: 22px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.6);
-      padding: 16px 28px;
+      padding: 14px 28px;
       text-align: center;
       pointer-events: auto;
       position: relative;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .q-badge {
@@ -277,9 +279,9 @@
       background: linear-gradient(90deg, #0088FF, #00B4D8);
       color: #fff;
       font-family: 'Lilita One', cursive;
-      font-size: 15px;
+      font-size: 14px;
       letter-spacing: 1px;
-      padding: 4px 20px;
+      padding: 3px 18px;
       border-radius: 20px;
       border: 2px solid #fff;
       box-shadow: 0 4px 10px rgba(0, 136, 255, 0.5);
@@ -287,10 +289,10 @@
 
     .q-main {
       font-family: 'Lilita One', cursive;
-      font-size: 27px;
+      font-size: 26px;
       color: #ffffff;
-      margin-top: 6px;
-      line-height: 1.35;
+      margin-top: 4px;
+      line-height: 1.3;
       text-shadow: 2px 3px 0 #0c111c;
     }
 
@@ -301,11 +303,22 @@
       margin-top: 4px;
     }
 
+    /* 4 Pilihan Jawaban */
     .choices-grid-4 {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px 24px;
+      gap: 14px 22px;
       width: 1040px;
+      pointer-events: auto;
+    }
+
+    /* Khusus Level 4: 2 Opsi Lebar (Kiri / Kanan) */
+    .choices-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      width: 980px;
+      margin-top: 14px;
       pointer-events: auto;
     }
 
@@ -332,8 +345,8 @@
     .choice-card.holding {
       border-color: var(--gold);
       background: linear-gradient(180deg, #384973 0%, #212c47 100%);
-      transform: scale(1.03);
-      box-shadow: 0 10px 0 #0d121f, 0 0 25px rgba(255, 209, 36, 0.6);
+      transform: scale(1.02);
+      box-shadow: 0 8px 0 #0d121f, 0 0 25px rgba(255, 209, 36, 0.6);
     }
 
     .choice-card.correct {
@@ -374,7 +387,7 @@
     }
 
     .choice-text {
-      font-size: 20px;
+      font-size: 19px;
       font-weight: 700;
       color: #FFFFFF;
       line-height: 1.25;
@@ -417,7 +430,7 @@
       border-radius: 24px;
       padding: 20px 40px;
       font-family: 'Lilita One', cursive;
-      font-size: 42px;
+      font-size: 40px;
       color: #FFF;
       text-shadow: 2px 2px 0 #000;
       z-index: 50;
@@ -448,7 +461,7 @@
       display: flex;
       align-items: center;
       gap: 14px;
-      max-width: 480px;
+      max-width: 500px;
       box-shadow: 0 6px 20px rgba(0,210,255,0.3);
       z-index: 30;
       pointer-events: none;
@@ -471,8 +484,8 @@
       position: absolute;
       bottom: 16px;
       right: 20px;
-      width: 230px;
-      height: 155px;
+      width: 220px;
+      height: 150px;
       background: #0f1422;
       border: 3px solid #0088FF;
       border-radius: 16px;
@@ -535,19 +548,19 @@
       border-radius: 28px;
       box-shadow: 0 16px 40px rgba(0,0,0,0.7);
       padding: 36px 48px;
-      max-width: 720px;
+      max-width: 740px;
       width: 90%;
       position: relative;
     }
 
     .main-logo {
       font-family: 'Lilita One', cursive;
-      font-size: 56px;
+      font-size: 54px;
       color: var(--gold);
       line-height: 1.1;
       text-shadow: 4px 5px 0 #0c1220, 0 0 30px rgba(255, 209, 36, 0.5);
       letter-spacing: 1.5px;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
     .btn-column {
@@ -610,7 +623,7 @@
       border-color: var(--gold);
     }
 
-    /* Kalibrasi Giliran Baru */
+    /* Kalibrasi Overlay */
     #calib-overlay {
       position: absolute;
       top: 0;
@@ -626,18 +639,18 @@
       backdrop-filter: blur(4px);
     }
     .calib-circle {
-      width: 140px;
-      height: 140px;
+      width: 130px;
+      height: 130px;
       border: 8px dashed var(--gold);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       font-family: 'Lilita One';
-      font-size: 58px;
+      font-size: 54px;
       color: #fff;
       animation: spinBox 4s linear infinite;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
     @keyframes spinBox {
       100% { transform: rotate(360deg); }
@@ -652,7 +665,10 @@
     <!-- Top HUD -->
     <header id="hud">
       <div class="hud-card">
-        <span class="lvl-label" id="hud-level-title">SOAL 1</span>
+        <div>
+          <div class="lvl-label" id="hud-level-title">LEVEL 1</div>
+          <div style="font-size:11px; font-weight:700; color:#A8C6FF;" id="hud-level-topic">NILAI TEMPAT</div>
+        </div>
         <div class="progress-track" id="hud-progress-dots">
           <div class="p-block active"></div>
           <div class="p-block"></div>
@@ -660,7 +676,18 @@
           <div class="p-block"></div>
           <div class="p-block"></div>
         </div>
-        <span id="hud-q-count" style="font-weight:700; font-size:16px; color:#A8C6FF; margin-left:4px;">1/5</span>
+      </div>
+
+      <!-- Nyawa & Piala -->
+      <div class="hud-card">
+        <div class="lives-badge" id="hud-lives">
+          <span>❤️</span><span>❤️</span><span>❤️</span><span>❤️</span><span>❤️</span>
+        </div>
+        <div style="width:2px; height:24px; background:#3c4f79;"></div>
+        <div class="trophy-badge">
+          <span>🏆</span>
+          <span id="hud-trophies">0/5</span>
+        </div>
       </div>
 
       <!-- Timer -->
@@ -669,17 +696,14 @@
         <span class="timer-num" id="hud-timer-sec">30</span>
       </div>
 
+      <!-- Skor -->
       <div class="hud-card">
-        <div class="crystal-badge">
-          <span>💎</span>
-          <span id="hud-crystal-count">0/5</span>
-        </div>
-        <div class="hud-txt" style="margin-left:14px;">
+        <div class="hud-txt">
           SKOR: <span class="score-hl" id="hud-score">0</span>
         </div>
       </div>
 
-      <div style="display:flex; gap:10px;">
+      <div style="display:flex; gap:8px;">
         <button class="hud-btn btn-pause" id="btn-pause-game" title="Jeda & Ganti Siswa">⏸️ GANTI PEMAIN</button>
         <button class="hud-btn" id="btn-audio" title="Musik ON/OFF">🔊</button>
         <button class="hud-btn" id="btn-fullscreen" title="Layar Penuh">⛶</button>
@@ -696,9 +720,9 @@
     <!-- Papan Soal -->
     <main id="quiz-board">
       <div class="q-box">
-        <div class="q-badge" id="q-topic">MEMBACA & MENULIS BILANGAN CACAH</div>
-        <div class="q-main" id="q-text">Bilangan yang dibaca "tiga puluh lima ribu dua ratus delapan" adalah ....</div>
-        <div class="q-desc" id="q-sub">Gerakkan tangan/badan atau sentuh layar langsung! Kunci kilat: 0.5 detik.</div>
+        <div class="q-badge" id="q-topic">LEVEL 1: NILAI TEMPAT BILANGAN</div>
+        <div class="q-main" id="q-text">Memuat pertanyaan...</div>
+        <div class="q-desc" id="q-sub">Pilih opsi dengan gerakan tubuh atau sentuh langsung di layar!</div>
       </div>
 
       <div class="choices-grid-4" id="choices-box"></div>
@@ -706,15 +730,15 @@
 
     <!-- Feedback Toast -->
     <div id="toast-feedback">
-      <div id="fb-main">✅ AWESOME!</div>
-      <div style="font-family:'Fredoka'; font-size:18px; font-weight:600; color:#e2f1ff;" id="fb-sub">+150 Poin</div>
+      <div id="fb-main">✅ JAWABAN TEPAT!</div>
+      <div style="font-family:'Fredoka'; font-size:18px; font-weight:600; color:#e2f1ff;" id="fb-sub">+100 Poin</div>
     </div>
 
     <!-- NUMI Box -->
     <div id="numi-bar">
       <div class="numi-avatar">🤖</div>
       <div style="font-size:15px; font-weight:600; color:#E2F1FF; line-height:1.3;" id="numi-speech">
-        “Sensor sudah sangat jeli! Tahan pose 0.5 detik saja langsung terkunci!”
+        “Selamat datang di Number Blocks Adventure! Jaga 5 nyawamu sampai Level 5 ya!”
       </div>
     </div>
 
@@ -722,26 +746,30 @@
     <div id="webcam-view">
       <video id="webcam-elem" autoplay playsinline muted></video>
       <canvas id="cam-canvas"></canvas>
-      <div class="cam-tag" id="cam-status">Sensor: Responsif</div>
+      <div class="cam-tag" id="cam-status">Sensor: Aktif</div>
     </div>
 
     <!-- Start Modal -->
     <div class="screen-layer" id="layer-start">
       <div class="modal-box">
         <h1 class="main-logo">Number Blocks Adventure</h1>
+        <p style="font-size:17px; color:#c7d8ff; margin-bottom:24px; line-height:1.5;">
+          Taklukkan 5 Level Bilangan Cacah hingga 100.000!<br>
+          Gunakan gerakan tubuh (kunci kilat 0,5 detik) atau sentuh layar langsung.
+        </p>
         <div class="btn-column">
           <button class="btn-roblox yellow" id="btn-start">START</button>
         </div>
       </div>
     </div>
 
-    <!-- Pause / Ganti Pemain Modal -->
+    <!-- Pause Modal -->
     <div class="screen-layer" id="layer-pause">
       <div class="modal-box pause-box">
         <h1 class="main-logo" style="color:var(--gold);">Number Blocks Adventure</h1>
-        <div style="font-family:'Lilita One'; font-size:22px; color:#00D2FF; margin-bottom:18px;">PERMAINAN DIJEDA • GANTI PEMAIN</div>
-        <p style="font-size: 17px; color: #c4d7ff; margin-bottom: 24px; line-height: 1.5;">
-          Silakan pemain baru bersiap di depan kamera. Klik tombol di bawah untuk melanjutkan!
+        <div style="font-family:'Lilita One'; font-size:22px; color:#00D2FF; margin-bottom:16px;">PERMAINAN DIJEDA • GANTI PEMAIN</div>
+        <p style="font-size: 16px; color: #c4d7ff; margin-bottom: 24px; line-height: 1.5;">
+          Pemain baru silakan bersiap di depan layar IFP / kamera. Tekan tombol di bawah untuk melanjutkan!
         </p>
         <div class="btn-column">
           <button class="btn-roblox green" id="btn-resume-player">SIAP MAIN!</button>
@@ -753,19 +781,53 @@
     <!-- Kalibrasi Giliran Baru Overlay -->
     <div id="calib-overlay">
       <div class="calib-circle" id="calib-num">3</div>
-      <h2 style="font-family:'Lilita One'; font-size:36px; color:#fff; letter-spacing:1px;">MENYIAPKAN SENSOR...</h2>
-      <p style="font-size:18px; color:var(--gold); margin-top:8px;">Berdirilah dengan posisi tegak santai!</p>
+      <h2 style="font-family:'Lilita One'; font-size:34px; color:#fff; letter-spacing:1px;">MENYIAPKAN SENSOR...</h2>
+      <p style="font-size:18px; color:var(--gold); margin-top:8px;">Berdiri santai menghadap kamera!</p>
     </div>
 
-    <!-- Finish Modal -->
+    <!-- Level Cleared Modal -->
+    <div class="screen-layer" id="layer-level-clear" style="display:none;">
+      <div class="modal-box">
+        <h1 class="main-logo" style="color:#00E676;">LEVEL SELESAI!</h1>
+        <div style="font-size:64px; margin: 10px 0;">🏆</div>
+        <div style="font-family:'Lilita One'; font-size:24px; color:var(--gold); margin-bottom:12px;" id="clear-level-msg">
+          KAMU MEMPEROLEH 1 PIALA!
+        </div>
+        <p style="font-size:16px; color:#A8C6FF; margin-bottom:24px;" id="clear-level-desc">
+          Bersiaplah memasuki level tantangan berikutnya.
+        </p>
+        <div class="btn-column">
+          <button class="btn-roblox green" id="btn-next-level">LANJUT LEVEL BERIKUTNYA</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Game Over Modal (Nyawa Habis) -->
+    <div class="screen-layer" id="layer-game-over" style="display:none;">
+      <div class="modal-box" style="border-color:var(--red);">
+        <h1 class="main-logo" style="color:var(--red);">GAME OVER</h1>
+        <div style="font-size:20px; color:#fff; margin-bottom:16px;">Semua nyawamu telah habis!</div>
+        <div style="font-size: 24px; color: #fff; margin-bottom: 24px;">
+          Skor Akhir: <span class="score-hl" id="go-score">0</span>
+        </div>
+        <div class="btn-column">
+          <button class="btn-roblox yellow" id="btn-retry-game">COBA LAGI</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Finish Modal (Juara Tamat Level 5) -->
     <div class="screen-layer" id="layer-finish" style="display:none;">
       <div class="modal-box">
-        <h1 class="main-logo" style="color:#00E676;">QUEST COMPLETE!</h1>
-        <div style="font-family:'Lilita One'; font-size:22px; color:#00D2FF; margin-bottom:12px;" id="finish-grade">PANGKAT: MASTER MATEMATIKA</div>
+        <h1 class="main-logo" style="color:var(--gold);">SELAMAT!</h1>
+        <div style="font-family:'Lilita One'; font-size:24px; color:#00E676; margin-bottom:12px;">GRANDMASTER BILANGAN CACAH</div>
+        <div style="font-size:50px; margin: 10px 0;">🏆🏆🏆🏆🏆</div>
         <div style="font-size: 26px; color: #fff; margin: 15px 0;">
           Skor Akhir: <span class="score-hl" id="finish-score">0</span>
         </div>
-        <p style="font-size: 16px; color: #A8C6FF; margin-bottom: 24px;" id="finish-stats">Total Kristal: 5/5</p>
+        <p style="font-size: 16px; color: #A8C6FF; margin-bottom: 24px;">
+          Kamu berhasil mengumpulkan 5 Piala Emas dan menaklukkan semua level!
+        </p>
         <div class="btn-column">
           <button class="btn-roblox green" id="btn-restart">MAIN LAGI</button>
         </div>
@@ -776,68 +838,318 @@
 
   <script>
     /* =========================================================
-       1. DATA SOAL
+       1. DATA SOAL 5 LEVEL LENGKAP (BILANGAN CACAH S.D 100.000)
        ========================================================= */
-    const QUESTION_BANK = [
+    const GAME_LEVELS = [
       {
-        topic: "MEMBACA & MENULIS BILANGAN CACAH",
-        question: "Bilangan yang dibaca \"tiga puluh lima ribu dua ratus delapan\" adalah ....",
-        sub: "Angkat tangan kiri untuk A, tangan kanan untuk B, atau sentuh langsung kartunya!",
-        choices: [
-          { key: "A", text: "35.280", hint: "🙋 Tangan Kiri Atas" },
-          { key: "B", text: "35.208", hint: "🙋‍♂️ Tangan Kanan Atas" },
-          { key: "C", text: "35.028", hint: "🙆 Condong Kiri" },
-          { key: "D", text: "35.820", hint: "🙅 Condong Kanan" }
-        ],
-        correct: "B"
+        level: 1,
+        title: "LEVEL 1: NILAI TEMPAT BILANGAN",
+        shortTitle: "NILAI TEMPAT",
+        timer: 30,
+        isTwoChoices: false,
+        questions: [
+          {
+            q: "Pada bilangan 78.415, angka 8 bernilai tempat ....",
+            sub: "Pilih opsi jawaban yang tepat!",
+            choices: [
+              { key: "A", text: "Puluhan Ribu", hint: "🙋 Tangan Kiri Atas" },
+              { key: "B", text: "Ribuan", hint: "🙋‍♂️ Tangan Kanan Atas" },
+              { key: "C", text: "Ratusan", hint: "🙆 Condong Kiri" },
+              { key: "D", text: "Puluhan", hint: "🙅 Condong Kanan" }
+            ],
+            correct: "B"
+          },
+          {
+            q: "Nilai angka 5 pada bilangan 52.340 adalah ....",
+            sub: "Perhatikan letak angka paling depan!",
+            choices: [
+              { key: "A", text: "50.000", hint: "🙋 Tangan Kiri Atas" },
+              { key: "B", text: "5.000", hint: "🙋‍♂️ Tangan Kanan Atas" },
+              { key: "C", text: "500", hint: "🙆 Condong Kiri" },
+              { key: "D", text: "50", hint: "🙅 Condong Kanan" }
+            ],
+            correct: "A"
+          },
+          {
+            q: "Pada bilangan 94.608, angka yang menempati nilai tempat ratusan adalah ....",
+            sub: "Hitung urutan nilai tempat dari belakang!",
+            choices: [
+              { key: "A", text: "4", hint: "🙋 Tangan Kiri Atas" },
+              { key: "B", text: "0", hint: "🙋‍♂️ Tangan Kanan Atas" },
+              { key: "C", text: "6", hint: "🙆 Condong Kiri" },
+              { key: "D", text: "8", hint: "🙅 Condong Kanan" }
+            ],
+            correct: "C"
+          },
+          {
+            q: "Bilangan 40.207 dibaca ....",
+            sub: "Hati-hati dengan angka nol pada nilai tempatnya!",
+            choices: [
+              { key: "A", text: "Empat puluh ribu dua puluh tujuh", hint: "🙋 Tangan Kiri Atas" },
+              { key: "B", text: "Empat ribu dua ratus tujuh", hint: "🙋‍♂️ Tangan Kanan Atas" },
+              { key: "C", text: "Empat puluh dua ribu tujuh", hint: "🙆 Condong Kiri" },
+              { key: "D", text: "Empat puluh ribu dua ratus tujuh", hint: "🙅 Condong Kanan" }
+            ],
+            correct: "D"
+          },
+          {
+            q: "Angka 3 pada bilangan 31.890 menempati nilai tempat ....",
+            sub: "Tentukan nama nilai tempatnya!",
+            choices: [
+              { key: "A", text: "Puluhan Ribu", hint: "🙋 Tangan Kiri Atas" },
+              { key: "B", text: "Ribuan", hint: "🙋‍♂️ Tangan Kanan Atas" },
+              { key: "C", text: "Ratusan Ribu", hint: "🙆 Condong Kiri" },
+              { key: "D", text: "Ratusan", hint: "🙅 Condong Kanan" }
+            ],
+            correct: "A"
+          }
+        ]
       },
       {
-        topic: "NILAI TEMPAT BILANGAN",
-        question: "Pada bilangan 78.415, angka 8 bernilai tempat ....",
-        sub: "Angkat tangan kanan jika Ribuan, atau sentuh kartunya!",
-        choices: [
-          { key: "A", text: "Puluhan Ribu", hint: "🙋 Tangan Kiri Atas" },
-          { key: "B", text: "Ribuan", hint: "🙋‍♂️ Tangan Kanan Atas" },
-          { key: "C", text: "Ratusan", hint: "🙆 Condong Kiri" },
-          { key: "D", text: "Puluhan", hint: "🙅 Condong Kanan" }
-        ],
-        correct: "B"
+        level: 2,
+        title: "LEVEL 2: MENGURUTKAN BILANGAN",
+        shortTitle: "MENGURUTKAN",
+        timer: 30,
+        isTwoChoices: false,
+        questions: [
+          {
+            q: "Urutan bilangan dari yang TERKECIL ke terbesar adalah ....",
+            sub: "Bandingkan angka mulai dari digit paling kiri!",
+            choices: [
+              { key: "A", text: "21.500, 23.100, 22.400", hint: "🙋 Tangan Kiri Atas" },
+              { key: "B", text: "21.500, 22.400, 23.100", hint: "🙋‍♂️ Tangan Kanan Atas" },
+              { key: "C", text: "23.100, 22.400, 21.500", hint: "🙆 Condong Kiri" },
+              { key: "D", text: "22.400, 21.500, 23.100", hint: "🙅 Condong Kanan" }
+            ],
+            correct: "B"
+          },
+          {
+            q: "Bilangan yang nilainya LEBIH BESAR dari 65.400 adalah ....",
+            sub: "Cari bilangan dengan nilai di atas 65.400!",
+            choices: [
+              { key: "A", text: "65.390", hint: "🙋 Tangan Kiri Atas" },
+              { key: "B", text: "64.999", hint: "🙋‍♂️ Tangan Kanan Atas" },
+              { key: "C", text: "65.450", hint: "🙆 Condong Kiri" },
+              { key: "D", text: "65.040", hint: "🙅 Condong Kanan" }
+            ],
+            correct: "C"
+          },
+          {
+            q: "Tanda yang tepat untuk 53.820 ... 53.790 adalah ....",
+            sub: "Bandingkan angka ratusan pada kedua bilangan!",
+            choices: [
+              { key: "A", text: "> (Lebih Dari)", hint: "🙋 Tangan Kiri Atas" },
+              { key: "B", text: "< (Kurang Dari)", hint: "🙋‍♂️ Tangan Kanan Atas" },
+              { key: "C", text: "= (Sama Dengan)", hint: "🙆 Condong Kiri" },
+              { key: "D", text: "<= (Kurang / Sama)", hint: "🙅 Condong Kanan" }
+            ],
+            correct: "A"
+          },
+          {
+            q: "Urutan bilangan dari yang TERBESAR ke terkecil adalah ....",
+            sub: "Pilih urutan yang menurun!",
+            choices: [
+              { key: "A", text: "87.000, 85.500, 89.200", hint: "🙋 Tangan Kiri Atas" },
+              { key: "B", text: "85.500, 87.000, 89.200", hint: "🙋‍♂️ Tangan Kanan Atas" },
+              { key: "C", text: "89.200, 87.000, 85.500", hint: "🙆 Condong Kiri" },
+              { key: "D", text: "89.200, 85.500, 87.000", hint: "🙅 Condong Kanan" }
+            ],
+            correct: "C"
+          },
+          {
+            q: "Di antara bilangan berikut, manakah yang paling kecil?",
+            sub: "Periksa ribuan dan ratusannya!",
+            choices: [
+              { key: "A", text: "34.610", hint: "🙋 Tangan Kiri Atas" },
+              { key: "B", text: "34.160", hint: "🙋‍♂️ Tangan Kanan Atas" },
+              { key: "C", text: "34.090", hint: "🙆 Condong Kiri" },
+              { key: "D", text: "34.900", hint: "🙅 Condong Kanan" }
+            ],
+            correct: "C"
+          }
+        ]
       },
       {
-        topic: "KOMPOSISI BILANGAN CACAH",
-        question: "Bentuk panjang dari 60.000 + 4.000 + 300 + 5 adalah ....",
-        sub: "Perhatikan angka puluhan dan satuannya!",
-        choices: [
-          { key: "A", text: "64.305", hint: "🙋 Tangan Kiri Atas" },
-          { key: "B", text: "64.350", hint: "🙋‍♂️ Tangan Kanan Atas" },
-          { key: "C", text: "64.035", hint: "🙆 Condong Kiri" },
-          { key: "D", text: "60.435", hint: "🙅 Condong Kanan" }
-        ],
-        correct: "A"
+        level: 3,
+        title: "LEVEL 3: DEKOMPOSISI BILANGAN",
+        shortTitle: "DEKOMPOSISI",
+        timer: 30,
+        isTwoChoices: false,
+        questions: [
+          {
+            q: "Bentuk panjang dari 64.305 adalah ....",
+            sub: "Perhatikan angka nol pada nilai puluhan!",
+            choices: [
+              { key: "A", text: "60.000 + 4.000 + 300 + 5", hint: "🙋 Tangan Kiri Atas" },
+              { key: "B", text: "60.000 + 4.000 + 30 + 5", hint: "🙋‍♂️ Tangan Kanan Atas" },
+              { key: "C", text: "6.000 + 400 + 30 + 5", hint: "🙆 Condong Kiri" },
+              { key: "D", text: "60.000 + 400 + 300 + 5", hint: "🙅 Condong Kanan" }
+            ],
+            correct: "A"
+          },
+          {
+            q: "70.000 + 5.000 + 800 + 20 + 9 sama dengan ....",
+            sub: "Gabungkan sesuai nilai tempatnya!",
+            choices: [
+              { key: "A", text: "75.289", hint: "🙋 Tangan Kiri Atas" },
+              { key: "B", text: "75.829", hint: "🙋‍♂️ Tangan Kanan Atas" },
+              { key: "C", text: "75.892", hint: "🙆 Condong Kiri" },
+              { key: "D", text: "75.820", hint: "🙅 Condong Kanan" }
+            ],
+            correct: "B"
+          },
+          {
+            q: "Bilangan 90.410 jika didekomposisi menjadi ....",
+            sub: "Cermati angka yang bernilai nol!",
+            choices: [
+              { key: "A", text: "90.000 + 400 + 10", hint: "🙋 Tangan Kiri Atas" },
+              { key: "B", text: "9.000 + 400 + 10", hint: "🙋‍♂️ Tangan Kanan Atas" },
+              { key: "C", text: "90.000 + 4.000 + 10", hint: "🙆 Condong Kiri" },
+              { key: "D", text: "90.000 + 40 + 10", hint: "🙅 Condong Kanan" }
+            ],
+            correct: "A"
+          },
+          {
+            q: "Bentuk 80.000 + 300 + 6 menghasilkan bilangan ....",
+            sub: "Hati-hati dengan nilai tempat ribuan dan puluhan!",
+            choices: [
+              { key: "A", text: "83.006", hint: "🙋 Tangan Kiri Atas" },
+              { key: "B", text: "80.360", hint: "🙋‍♂️ Tangan Kanan Atas" },
+              { key: "C", text: "80.306", hint: "🙆 Condong Kiri" },
+              { key: "D", text: "83.600", hint: "🙅 Condong Kanan" }
+            ],
+            correct: "C"
+          },
+          {
+            q: "Dekomposisi dari 42.750 adalah ....",
+            sub: "Periksa nilai ratusan dan puluhannya!",
+            choices: [
+              { key: "A", text: "40.000 + 2.000 + 700 + 50", hint: "🙋 Tangan Kiri Atas" },
+              { key: "B", text: "40.000 + 200 + 70 + 5", hint: "🙋‍♂️ Tangan Kanan Atas" },
+              { key: "C", text: "4.000 + 2.000 + 700 + 50", hint: "🙆 Condong Kiri" },
+              { key: "D", text: "40.000 + 2.000 + 750", hint: "🙅 Condong Kanan" }
+            ],
+            correct: "A"
+          }
+        ]
       },
       {
-        topic: "MEMBANDINGKAN BILANGAN",
-        question: "Tanda yang tepat untuk perbandingan: 42.670 ... 42.760 adalah ....",
-        sub: "Bandingkan nilai tempat ratusan dari kedua bilangan!",
-        choices: [
-          { key: "A", text: "> (Lebih Dari)", hint: "🙋 Tangan Kiri Atas" },
-          { key: "B", text: "< (Kurang Dari)", hint: "🙋‍♂️ Tangan Kanan Atas" },
-          { key: "C", text: "= (Sama Dengan)", hint: "🙆 Condong Kiri" },
-          { key: "D", text: ">= (Lebih/Sama)", hint: "🙅 Condong Kanan" }
-        ],
-        correct: "B"
+        level: 4,
+        title: "LEVEL 4: OPERASI BILANGAN",
+        shortTitle: "OPERASI",
+        timer: 45, // Waktu ekstra untuk berhitung
+        isTwoChoices: true, // 2 Opsi saja: Geser/Miring Badan Kiri (C) atau Kanan (D)
+        questions: [
+          {
+            q: "Berapakah hasil dari 45.000 + 27.000 ?",
+            sub: "Geser/miring badan ke KIRI atau KANAN untuk memilih!",
+            choices: [
+              { key: "C", text: "72.000", hint: "🙆 Miring / Geser KIRI" },
+              { key: "D", text: "62.000", hint: "🙅 Miring / Geser KANAN" }
+            ],
+            correct: "C"
+          },
+          {
+            q: "Berapakah hasil dari 80.000 - 35.000 ?",
+            sub: "Hitung pengurangan dengan teliti!",
+            choices: [
+              { key: "C", text: "55.000", hint: "🙆 Miring / Geser KIRI" },
+              { key: "D", text: "45.000", hint: "🙅 Miring / Geser KANAN" }
+            ],
+            correct: "D"
+          },
+          {
+            q: "Berapakah hasil dari (12.000 × 3) + 10.000 ?",
+            sub: "Dahulukan operasi perkalian!",
+            choices: [
+              { key: "C", text: "46.000", hint: "🙆 Miring / Geser KIRI" },
+              { key: "D", text: "36.000", hint: "🙅 Miring / Geser KANAN" }
+            ],
+            correct: "C"
+          },
+          {
+            q: "Berapakah hasil dari 50.000 - (15.000 × 2) ?",
+            sub: "Kalikan terlebih dahulu bilangan di dalam kurung!",
+            choices: [
+              { key: "C", text: "30.000", hint: "🙆 Miring / Geser KIRI" },
+              { key: "D", text: "20.000", hint: "🙅 Miring / Geser KANAN" }
+            ],
+            correct: "D"
+          },
+          {
+            q: "Berapakah hasil dari 63.000 + 17.000 ?",
+            sub: "Jumlahkan kedua bilangan puluhan ribu!",
+            choices: [
+              { key: "C", text: "80.000", hint: "🙆 Miring / Geser KIRI" },
+              { key: "D", text: "70.000", hint: "🙅 Miring / Geser KANAN" }
+            ],
+            correct: "C"
+          }
+        ]
       },
       {
-        topic: "OPERASI HITUNG CAMPURAN",
-        question: "Hasil dari: 15.000 + (2.500 × 4) adalah ....",
-        sub: "Selesaikan perkalian di dalam kurung lebih dulu!",
-        choices: [
-          { key: "A", text: "20.000", hint: "🙋 Tangan Kiri Atas" },
-          { key: "B", text: "70.000", hint: "🙋‍♂️ Tangan Kanan Atas" },
-          { key: "C", text: "25.000", hint: "🙆 Condong Kiri" },
-          { key: "D", text: "30.000", hint: "🙅 Condong Kanan" }
-        ],
-        correct: "C"
+        level: 5,
+        title: "LEVEL 5 (PUNCAK): TANTANGAN SEMUA TOPIK",
+        shortTitle: "PUNCAK",
+        timer: 35,
+        isTwoChoices: false,
+        questions: [
+          {
+            q: "[Nilai Tempat] Pada 83.250, selisih nilai angka 8 dan angka 3 adalah ....",
+            sub: "Nilai 80.000 dikurangi nilai 3.000!",
+            choices: [
+              { key: "A", text: "77.000", hint: "🙋 Tangan Kiri Atas" },
+              { key: "B", text: "50.000", hint: "🙋‍♂️ Tangan Kanan Atas" },
+              { key: "C", text: "75.000", hint: "🙆 Condong Kiri" },
+              { key: "D", text: "5.000", hint: "🙅 Condong Kanan" }
+            ],
+            correct: "A"
+          },
+          {
+            q: "[Mengurutkan] Bilangan yang terletak tepat di antara 49.998 dan 50.000 adalah ....",
+            sub: "Perhatikan bilangan sebelum 50.000!",
+            choices: [
+              { key: "A", text: "49.997", hint: "🙋 Tangan Kiri Atas" },
+              { key: "B", text: "49.999", hint: "🙋‍♂️ Tangan Kanan Atas" },
+              { key: "C", text: "50.001", hint: "🙆 Condong Kiri" },
+              { key: "D", text: "49.990", hint: "🙅 Condong Kanan" }
+            ],
+            correct: "B"
+          },
+          {
+            q: "[Dekomposisi] Suatu bilangan tersusun atas 5 puluhan ribu, 2 ratusan, dan 4 satuan. Bilangan itu adalah ....",
+            sub: "Cermati nilai ribuan dan puluhan yang tidak ada (0)!",
+            choices: [
+              { key: "A", text: "52.004", hint: "🙋 Tangan Kiri Atas" },
+              { key: "B", text: "50.240", hint: "🙋‍♂️ Tangan Kanan Atas" },
+              { key: "C", text: "50.204", hint: "🙆 Condong Kiri" },
+              { key: "D", text: "52.400", hint: "🙅 Condong Kanan" }
+            ],
+            correct: "C"
+          },
+          {
+            q: "[Operasi] Toko memiliki 35.000 buku, lalu membeli lagi 25.000 buku dan terjual 40.000 buku. Sisa buku adalah ....",
+            sub: "Kerjakan penjumlahan lalu kurangkan!",
+            choices: [
+              { key: "A", text: "20.000", hint: "🙋 Tangan Kiri Atas" },
+              { key: "B", text: "30.000", hint: "🙋‍♂️ Tangan Kanan Atas" },
+              { key: "C", text: "15.000", hint: "🙆 Condong Kiri" },
+              { key: "D", text: "25.000", hint: "🙅 Condong Kanan" }
+            ],
+            correct: "A"
+          },
+          {
+            q: "[Tantangan Akhir] Hasil dari 100.000 - (20.000 × 3) + 5.000 adalah ....",
+            sub: "Selesaikan tantangan pamungkas ini!",
+            choices: [
+              { key: "A", text: "35.000", hint: "🙋 Tangan Kiri Atas" },
+              { key: "B", text: "45.000", hint: "🙋‍♂️ Tangan Kanan Atas" },
+              { key: "C", text: "55.000", hint: "🙆 Condong Kiri" },
+              { key: "D", text: "40.000", hint: "🙅 Condong Kanan" }
+            ],
+            correct: "B"
+          }
+        ]
       }
     ];
 
@@ -855,9 +1167,7 @@
           const AudioCtx = window.AudioContext || window.webkitAudioContext;
           this.ctx = new AudioCtx();
         }
-        if (this.ctx.state === 'suspended') {
-          this.ctx.resume();
-        }
+        if (this.ctx.state === 'suspended') this.ctx.resume();
       }
 
       playLockTick(progress) {
@@ -904,10 +1214,26 @@
         osc.start();
         osc.stop(this.ctx.currentTime + 0.3);
       }
+
+      playTrophy() {
+        if (this.muted || !this.ctx) return;
+        [440, 554.37, 659.25, 880].forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime + idx * 0.1);
+          gain.gain.setValueAtTime(0.08, this.ctx.currentTime + idx * 0.1);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + idx * 0.1 + 0.3);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(this.ctx.currentTime + idx * 0.1);
+          osc.stop(this.ctx.currentTime + idx * 0.1 + 0.3);
+        });
+      }
     }
 
     /* =========================================================
-       3. 3D ISOMETRIC BACKGROUND RENDERER
+       3. 3D ISOMETRIC WORLD RENDERER
        ========================================================= */
     class WorldRenderer {
       constructor(canvas) {
@@ -1039,22 +1365,24 @@
     }
 
     /* =========================================================
-       4. GAME ENGINE & DETEKSI 0.5 DETIK ULTRA RESPONSIF
+       4. GAME CONTROLLER UTUH (5 LEVEL, 5 NYAWA, 5 PIALA)
        ========================================================= */
     class GameEngine {
       constructor() {
         this.sound = new SoundEngine();
         this.world = new WorldRenderer(document.getElementById('world-canvas'));
 
+        this.currentLevelIdx = 0;
         this.currentQIdx = 0;
         this.score = 0;
-        this.crystals = 0;
+        this.lives = 5;
+        this.trophies = 0;
+
         this.timer = 30;
-        this.maxTimer = 30;
         this.timerInterval = null;
         this.isPaused = false;
 
-        // KUNCI JAWABAN CEPAT: Tahan pose 0.5 Detik saja
+        // KUNCI JAWABAN KILAT 0.5 DETIK
         this.holdRequired = 0.5;
         this.holdProgress = 0;
         this.lastHoldTimestamp = null;
@@ -1074,6 +1402,7 @@
       }
 
       bindEvents() {
+        // Tombol Start Tunggal
         document.getElementById('btn-start').addEventListener('click', () => {
           this.sound.init();
           this.startGame();
@@ -1081,13 +1410,28 @@
         });
 
         document.getElementById('btn-restart').addEventListener('click', () => {
-          this.restartGame();
+          this.resetGameCompletely();
+          this.startGame();
+        });
+
+        document.getElementById('btn-retry-game').addEventListener('click', () => {
+          document.getElementById('layer-game-over').style.display = 'none';
+          this.resetGameCompletely();
+          this.startGame();
         });
 
         document.getElementById('btn-restart-game').addEventListener('click', () => {
           document.getElementById('layer-pause').style.display = 'none';
           this.isPaused = false;
-          this.restartGame();
+          this.resetGameCompletely();
+          this.startGame();
+        });
+
+        document.getElementById('btn-next-level').addEventListener('click', () => {
+          document.getElementById('layer-level-clear').style.display = 'none';
+          this.currentLevelIdx++;
+          this.currentQIdx = 0;
+          this.loadQuestion();
         });
 
         document.getElementById('btn-pause-game').addEventListener('click', () => {
@@ -1118,6 +1462,15 @@
             document.exitFullscreen().catch(() => {});
           }
         });
+      }
+
+      resetGameCompletely() {
+        this.currentLevelIdx = 0;
+        this.currentQIdx = 0;
+        this.score = 0;
+        this.lives = 5;
+        this.trophies = 0;
+        this.isPaused = false;
       }
 
       pauseGame() {
@@ -1183,7 +1536,7 @@
             height: 480
           });
           this.camera.start().then(() => {
-            camTag.textContent = 'Sensor: Responsif ✅';
+            camTag.textContent = 'Sensor: Aktif ✅';
           }).catch(err => {
             camTag.textContent = 'Kamera Ditolak';
             console.warn(err);
@@ -1192,7 +1545,7 @@
       }
 
       /* =========================================================
-         DETEKSI CEPAT & JELI (Tangan Ditekuk / Miring Tetap Terbaca)
+         DETEKSI KILAT & JELI (0.5 DETIK)
          ========================================================= */
       onPoseResults(results) {
         this.camCanvas.width = this.videoElem.videoWidth || 320;
@@ -1220,31 +1573,45 @@
 
         this.drawSkeletonPIP(lm);
 
-        // Batas angkat tangan: Cukup melewati ketinggian bahu sedikit saja
-        // Periksa pergelangan ATAU siku agar anak yang tangannya menekuk tetap terbaca
+        const currentLvl = GAME_LEVELS[this.currentLevelIdx];
+
+        // LOGIKA LEVEL 4: KHUSUS 2 OPSI (C & D) - HANYA GESER/MIRING BADAN
+        if (currentLvl.isTwoChoices) {
+          const shoulderMidX = (leftShoulder.x + rightShoulder.x) / 2;
+          const tiltX = nose.x - shoulderMidX;
+
+          let detectedKey = null;
+          if (tiltX > 0.055) {
+            detectedKey = 'C'; // Geser / Miring Kiri
+          } else if (tiltX < -0.055) {
+            detectedKey = 'D'; // Geser / Miring Kanan
+          }
+
+          this.processHoldLogic(detectedKey);
+          return;
+        }
+
+        // LOGIKA LEVEL 1, 2, 3, 5: 4 OPSI (A, B, C, D)
         const shoulderLevelY = (leftShoulder.y + rightShoulder.y) / 2;
         const triggerY = shoulderLevelY + 0.05;
 
         const isLeftHandUp = (leftWrist && leftWrist.y < triggerY) || (leftElbow && leftElbow.y < shoulderLevelY);
         const isRightHandUp = (rightWrist && rightWrist.y < triggerY) || (rightElbow && rightElbow.y < shoulderLevelY);
 
-        // Ambang batas kemiringan badan (cukup condong tegas ke kiri/kanan)
         const shoulderMidX = (leftShoulder.x + rightShoulder.x) / 2;
         const tiltX = nose.x - shoulderMidX;
 
         let detectedKey = null;
-
         if (isLeftHandUp && !isRightHandUp) {
           detectedKey = 'A'; // Tangan kiri diangkat
         } else if (isRightHandUp && !isLeftHandUp) {
           detectedKey = 'B'; // Tangan kanan diangkat
         } else if (tiltX > 0.065) {
-          detectedKey = 'C'; // Miring ke kiri
+          detectedKey = 'C'; // Miring badan kiri
         } else if (tiltX < -0.065) {
-          detectedKey = 'D'; // Miring ke kanan
+          detectedKey = 'D'; // Miring badan kanan
         }
 
-        // Langsung proses hitungan 0.5 detik tanpa delay frame
         this.processHoldLogic(detectedKey);
       }
 
@@ -1275,7 +1642,6 @@
         }
       }
 
-      /* Logika Pengisian Cepat 0.5 Detik Nyata */
       processHoldLogic(key) {
         const now = performance.now();
 
@@ -1291,9 +1657,7 @@
           this.world.updateAvatarPos(key);
         }
 
-        if (!this.lastHoldTimestamp) {
-          this.lastHoldTimestamp = now;
-        }
+        if (!this.lastHoldTimestamp) this.lastHoldTimestamp = now;
 
         const dt = (now - this.lastHoldTimestamp) / 1000;
         this.lastHoldTimestamp = now;
@@ -1312,7 +1676,6 @@
         const remainSec = Math.max(0, this.holdRequired - this.holdProgress).toFixed(1);
         lockCountdown.textContent = `(${remainSec}s)`;
 
-        // Kunci seketika saat waktu 0.5 detik tercapai
         if (this.holdProgress >= this.holdRequired) {
           this.resetHoldState();
           this.commitAnswer(key);
@@ -1352,7 +1715,8 @@
         this.isProcessingAnswer = true;
         clearInterval(this.timerInterval);
 
-        const currentQ = QUESTION_BANK[this.currentQIdx];
+        const currentLvl = GAME_LEVELS[this.currentLevelIdx];
+        const currentQ = currentLvl.questions[this.currentQIdx];
         const isCorrect = (key === currentQ.correct);
         const cardElem = document.querySelector(`.choice-card[data-key="${key}"]`);
 
@@ -1363,59 +1727,93 @@
           const speedBonus = Math.floor(this.timer * 3);
           const roundScore = 100 + speedBonus;
           this.score += roundScore;
-          this.crystals++;
 
           this.triggerConfetti();
           this.showFeedback("✅ JAWABAN TEPAT!", `+${roundScore} Poin`, false);
-          this.setNumiSpeech(`Bagus sekali! Soal nomor ${this.currentQIdx + 1} berhasil dijawab! 💎+1`);
+          this.setNumiSpeech(`Bagus sekali! Pertanyaan ${this.currentQIdx + 1} berhasil dijawab!`);
         } else {
           this.sound.playWrong();
+          this.lives--;
+          this.updateLivesHUD();
+
           const correctCard = document.querySelector(`.choice-card[data-key="${currentQ.correct}"]`);
           if (correctCard) correctCard.classList.add('correct');
 
-          this.showFeedback("❌ BELUM TEPAT!", `Kunci: (${currentQ.correct})`, true);
-          this.setNumiSpeech(`Jangan menyerah, kamu bisa coba lagi di soal berikutnya!`);
+          this.showFeedback("❌ KURANG TEPAT!", `Kunci: (${currentQ.correct}) • Nyawa -1`, true);
+          this.setNumiSpeech(`Hati-hati, nyawamu berkurang satu! Tetap fokus!`);
         }
 
         this.updateHUD();
 
         setTimeout(() => {
+          // Periksa apakah nyawa habis
+          if (this.lives <= 0) {
+            this.handleGameOver();
+            return;
+          }
+
           this.currentQIdx++;
-          if (this.currentQIdx < QUESTION_BANK.length) {
+          // Jika masih ada soal dalam level ini
+          if (this.currentQIdx < currentLvl.questions.length) {
             this.loadQuestion();
           } else {
-            this.finishGame();
+            // Level Selesai -> Dapatkan Piala
+            this.handleLevelCleared();
           }
         }, 1600);
+      }
+
+      handleLevelCleared() {
+        this.trophies++;
+        this.sound.playTrophy();
+        this.triggerConfetti();
+        this.updateHUD();
+
+        // Jika tamat Level 5
+        if (this.currentLevelIdx >= GAME_LEVELS.length - 1) {
+          this.finishGame();
+          return;
+        }
+
+        // Tampilkan modal selesai level
+        document.getElementById('clear-level-msg').textContent = `KAMU MEMPEROLEH PIALA KE-${this.trophies}!`;
+        document.getElementById('clear-level-desc').textContent = `Kamu berhasil menyelesaikan ${GAME_LEVELS[this.currentLevelIdx].title}!`;
+        document.getElementById('layer-level-clear').style.display = 'flex';
+      }
+
+      handleGameOver() {
+        document.getElementById('go-score').textContent = this.score;
+        document.getElementById('layer-game-over').style.display = 'flex';
       }
 
       startGame() {
         document.getElementById('layer-start').style.display = 'none';
         document.getElementById('layer-finish').style.display = 'none';
         document.getElementById('layer-pause').style.display = 'none';
-        this.isPaused = false;
-        this.currentQIdx = 0;
-        this.score = 0;
-        this.crystals = 0;
-        this.loadQuestion();
-      }
+        document.getElementById('layer-game-over').style.display = 'none';
+        document.getElementById('layer-level-clear').style.display = 'none';
 
-      restartGame() {
-        this.startGame();
+        this.isPaused = false;
+        this.updateLivesHUD();
+        this.loadQuestion();
       }
 
       loadQuestion() {
         this.isProcessingAnswer = false;
         this.resetHoldState();
-        this.timer = this.maxTimer;
 
-        const q = QUESTION_BANK[this.currentQIdx];
-        document.getElementById('q-topic').textContent = q.topic;
-        document.getElementById('q-text').textContent = q.question;
+        const currentLvl = GAME_LEVELS[this.currentLevelIdx];
+        const q = currentLvl.questions[this.currentQIdx];
+        this.timer = currentLvl.timer;
+
+        document.getElementById('q-topic').textContent = currentLvl.title;
+        document.getElementById('q-text').textContent = q.q;
         document.getElementById('q-sub').textContent = q.sub;
 
         const container = document.getElementById('choices-box');
         container.innerHTML = '';
+        container.className = currentLvl.isTwoChoices ? 'choices-grid-2' : 'choices-grid-4';
+
         q.choices.forEach(ch => {
           const card = document.createElement('div');
           card.className = 'choice-card';
@@ -1462,15 +1860,26 @@
         }, 1000);
       }
 
+      updateLivesHUD() {
+        const livesBox = document.getElementById('hud-lives');
+        livesBox.innerHTML = '';
+        for (let i = 0; i < 5; i++) {
+          const heart = document.createElement('span');
+          heart.textContent = i < this.lives ? '❤️' : '🖤';
+          livesBox.appendChild(heart);
+        }
+      }
+
       updateHUD() {
-        document.getElementById('hud-level-title').textContent = `SOAL ${this.currentQIdx + 1}`;
-        document.getElementById('hud-q-count').textContent = `${this.currentQIdx + 1}/${QUESTION_BANK.length}`;
+        const currentLvl = GAME_LEVELS[this.currentLevelIdx];
+        document.getElementById('hud-level-title').textContent = `LEVEL ${currentLvl.level}`;
+        document.getElementById('hud-level-topic').textContent = currentLvl.shortTitle;
         document.getElementById('hud-score').textContent = this.score;
-        document.getElementById('hud-crystal-count').textContent = `${this.crystals}/${QUESTION_BANK.length}`;
+        document.getElementById('hud-trophies').textContent = `${this.trophies}/5`;
 
         const dotsContainer = document.getElementById('hud-progress-dots');
         dotsContainer.innerHTML = '';
-        for (let i = 0; i < QUESTION_BANK.length; i++) {
+        for (let i = 0; i < currentLvl.questions.length; i++) {
           const dot = document.createElement('div');
           dot.className = 'p-block';
           if (i < this.currentQIdx) dot.classList.add('done');
@@ -1510,12 +1919,6 @@
       finishGame() {
         document.getElementById('layer-finish').style.display = 'flex';
         document.getElementById('finish-score').textContent = this.score;
-        document.getElementById('finish-stats').textContent = `Total Kristal: ${this.crystals}/${QUESTION_BANK.length} • Modul Bilangan Cacah`;
-
-        let rank = "PETUALANG MATEMATIKA";
-        if (this.crystals === 5) rank = "🏆 GRANDMASTER BILANGAN CACAH";
-        else if (this.crystals >= 3) rank = "⚔️ JUARA MATEMATIKA";
-        document.getElementById('finish-grade').textContent = `PANGKAT: ${rank}`;
       }
 
       animate(time) {
