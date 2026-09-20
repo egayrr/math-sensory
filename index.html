@@ -222,7 +222,7 @@
       z-index: 25;
       opacity: 0;
       pointer-events: none;
-      transition: all 0.15s ease;
+      transition: all 0.1s ease;
     }
     #lock-hud-pill.show {
       opacity: 1;
@@ -321,7 +321,7 @@
       cursor: pointer;
       position: relative;
       overflow: hidden;
-      transition: transform 0.1s, border-color 0.15s, background 0.15s;
+      transition: transform 0.08s, border-color 0.1s;
     }
 
     .choice-card:hover {
@@ -404,7 +404,7 @@
       width: 0%;
       background: linear-gradient(90deg, #FFD124, #00FF88);
       box-shadow: 0 0 10px #FFD124;
-      transition: width 0.05s linear;
+      transition: width 0.04s linear;
     }
 
     #toast-feedback {
@@ -690,7 +690,7 @@
     <div id="lock-hud-pill">
       <span class="lock-pill-txt">Mengunci:</span>
       <span class="lock-pill-badge" id="lock-pill-letter">A</span>
-      <span style="font-family:'Lilita One'; font-size:18px; color:var(--gold);" id="lock-pill-countdown">(1.5s)</span>
+      <span style="font-family:'Lilita One'; font-size:18px; color:var(--gold);" id="lock-pill-countdown">(0.5s)</span>
     </div>
 
     <!-- Papan Soal -->
@@ -698,7 +698,7 @@
       <div class="q-box">
         <div class="q-badge" id="q-topic">MEMBACA & MENULIS BILANGAN CACAH</div>
         <div class="q-main" id="q-text">Bilangan yang dibaca "tiga puluh lima ribu dua ratus delapan" adalah ....</div>
-        <div class="q-desc" id="q-sub">Pilih dengan sensor kamera ATAU sentuh langsung kartu jawaban di layar!</div>
+        <div class="q-desc" id="q-sub">Gerakkan tangan/badan atau sentuh layar langsung! Kunci kilat: 0.5 detik.</div>
       </div>
 
       <div class="choices-grid-4" id="choices-box"></div>
@@ -714,7 +714,7 @@
     <div id="numi-bar">
       <div class="numi-avatar">🤖</div>
       <div style="font-size:15px; font-weight:600; color:#E2F1FF; line-height:1.3;" id="numi-speech">
-        “Gerakkan tubuh atau sentuh langsung layarnya. Keduanya langsung aktif!”
+        “Sensor sudah sangat jeli! Tahan pose 0.5 detik saja langsung terkunci!”
       </div>
     </div>
 
@@ -722,7 +722,7 @@
     <div id="webcam-view">
       <video id="webcam-elem" autoplay playsinline muted></video>
       <canvas id="cam-canvas"></canvas>
-      <div class="cam-tag" id="cam-status">Kamera: Aktif</div>
+      <div class="cam-tag" id="cam-status">Sensor: Responsif</div>
     </div>
 
     <!-- Start Modal -->
@@ -865,13 +865,13 @@
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(320 + (progress * 420), this.ctx.currentTime);
+        osc.frequency.setValueAtTime(360 + (progress * 450), this.ctx.currentTime);
         gain.gain.setValueAtTime(0.04, this.ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.08);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.05);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
         osc.start();
-        osc.stop(this.ctx.currentTime + 0.08);
+        osc.stop(this.ctx.currentTime + 0.05);
       }
 
       playCorrect() {
@@ -1039,7 +1039,7 @@
     }
 
     /* =========================================================
-       4. GAME ENGINE & DETEKSI SENSOR CEPAT (1.5 DETIK)
+       4. GAME ENGINE & DETEKSI 0.5 DETIK ULTRA RESPONSIF
        ========================================================= */
     class GameEngine {
       constructor() {
@@ -1054,8 +1054,8 @@
         this.timerInterval = null;
         this.isPaused = false;
 
-        // Tahan pose pas 1.5 detik (tidak kelamaan, tidak bikin pegal)
-        this.holdRequired = 1.5;
+        // KUNCI JAWABAN CEPAT: Tahan pose 0.5 Detik saja
+        this.holdRequired = 0.5;
         this.holdProgress = 0;
         this.lastHoldTimestamp = null;
 
@@ -1074,7 +1074,6 @@
       }
 
       bindEvents() {
-        // Tombol START tunggal: Sensor kamera aktif + layar sentuh tetap bisa digunakan
         document.getElementById('btn-start').addEventListener('click', () => {
           this.sound.init();
           this.startGame();
@@ -1099,7 +1098,6 @@
           this.resumeWithCalibration();
         });
 
-        // Kontrol Keyboard
         window.addEventListener('keydown', (e) => {
           if (this.isProcessingAnswer || this.isPaused) return;
           const key = e.key.toUpperCase();
@@ -1155,7 +1153,7 @@
 
       initMediaPipe() {
         const camTag = document.getElementById('cam-status');
-        camTag.textContent = 'Memuat AI Sensor...';
+        camTag.textContent = 'Memuat AI...';
 
         if (typeof Pose === 'undefined') {
           camTag.textContent = 'Layar Sentuh Aktif';
@@ -1170,8 +1168,8 @@
           modelComplexity: 0,
           smoothLandmarks: true,
           enableSegmentation: false,
-          minDetectionConfidence: 0.5,
-          minTrackingConfidence: 0.5
+          minDetectionConfidence: 0.35,
+          minTrackingConfidence: 0.35
         });
 
         this.pose.onResults((results) => this.onPoseResults(results));
@@ -1185,16 +1183,16 @@
             height: 480
           });
           this.camera.start().then(() => {
-            camTag.textContent = 'Sensor Aktif ✅';
+            camTag.textContent = 'Sensor: Responsif ✅';
           }).catch(err => {
-            camTag.textContent = 'Kamera Tidak Tersedia';
+            camTag.textContent = 'Kamera Ditolak';
             console.warn(err);
           });
         }
       }
 
       /* =========================================================
-         DETEKSI INSTAN & JELI
+         DETEKSI CEPAT & JELI (Tangan Ditekuk / Miring Tetap Terbaca)
          ========================================================= */
       onPoseResults(results) {
         this.camCanvas.width = this.videoElem.videoWidth || 320;
@@ -1210,6 +1208,8 @@
         const nose = lm[0];
         const leftShoulder = lm[11];
         const rightShoulder = lm[12];
+        const leftElbow = lm[13];
+        const rightElbow = lm[14];
         const leftWrist = lm[15];
         const rightWrist = lm[16];
 
@@ -1220,28 +1220,31 @@
 
         this.drawSkeletonPIP(lm);
 
-        // Batas angkat tangan: Cukup melewati batas hidung/mulut (tidak perlu sampai melayang tinggi)
-        const triggerHandY = nose.y + 0.02;
-        const isLeftUp = (leftWrist && leftWrist.y < triggerHandY && leftWrist.visibility > 0.4);
-        const isRightUp = (rightWrist && rightWrist.y < triggerHandY && rightWrist.visibility > 0.4);
+        // Batas angkat tangan: Cukup melewati ketinggian bahu sedikit saja
+        // Periksa pergelangan ATAU siku agar anak yang tangannya menekuk tetap terbaca
+        const shoulderLevelY = (leftShoulder.y + rightShoulder.y) / 2;
+        const triggerY = shoulderLevelY + 0.05;
 
-        // Ambang batas miring badan ke kanan dan kiri (harus jelas condong)
+        const isLeftHandUp = (leftWrist && leftWrist.y < triggerY) || (leftElbow && leftElbow.y < shoulderLevelY);
+        const isRightHandUp = (rightWrist && rightWrist.y < triggerY) || (rightElbow && rightElbow.y < shoulderLevelY);
+
+        // Ambang batas kemiringan badan (cukup condong tegas ke kiri/kanan)
         const shoulderMidX = (leftShoulder.x + rightShoulder.x) / 2;
         const tiltX = nose.x - shoulderMidX;
 
         let detectedKey = null;
 
-        if (isLeftUp && !isRightUp) {
+        if (isLeftHandUp && !isRightHandUp) {
           detectedKey = 'A'; // Tangan kiri diangkat
-        } else if (isRightUp && !isLeftUp) {
+        } else if (isRightHandUp && !isLeftHandUp) {
           detectedKey = 'B'; // Tangan kanan diangkat
-        } else if (tiltX > 0.075) {
-          detectedKey = 'C'; // Miring jelas ke kiri
-        } else if (tiltX < -0.075) {
-          detectedKey = 'D'; // Miring jelas ke kanan
+        } else if (tiltX > 0.065) {
+          detectedKey = 'C'; // Miring ke kiri
+        } else if (tiltX < -0.065) {
+          detectedKey = 'D'; // Miring ke kanan
         }
 
-        // Langsung hitung penguncian tanpa jeda filter
+        // Langsung proses hitungan 0.5 detik tanpa delay frame
         this.processHoldLogic(detectedKey);
       }
 
@@ -1251,11 +1254,11 @@
         const h = this.camCanvas.height;
 
         ctx.fillStyle = '#00FF88';
-        [0, 11, 12, 15, 16].forEach(idx => {
+        [0, 11, 12, 13, 14, 15, 16].forEach(idx => {
           const pt = landmarks[idx];
-          if (pt && pt.visibility > 0.4) {
+          if (pt && pt.visibility > 0.3) {
             ctx.beginPath();
-            ctx.arc(pt.x * w, pt.y * h, 5, 0, Math.PI * 2);
+            ctx.arc(pt.x * w, pt.y * h, 4, 0, Math.PI * 2);
             ctx.fill();
           }
         });
@@ -1272,7 +1275,7 @@
         }
       }
 
-      /* Logika Penahanan Cepat 1.5 Detik Nyata */
+      /* Logika Pengisian Cepat 0.5 Detik Nyata */
       processHoldLogic(key) {
         const now = performance.now();
 
@@ -1292,7 +1295,6 @@
           this.lastHoldTimestamp = now;
         }
 
-        // Hitung waktu dalam detik nyata
         const dt = (now - this.lastHoldTimestamp) / 1000;
         this.lastHoldTimestamp = now;
         this.holdProgress += dt;
@@ -1310,7 +1312,7 @@
         const remainSec = Math.max(0, this.holdRequired - this.holdProgress).toFixed(1);
         lockCountdown.textContent = `(${remainSec}s)`;
 
-        // Kunci seketika saat waktu 1.5 detik tercapai
+        // Kunci seketika saat waktu 0.5 detik tercapai
         if (this.holdProgress >= this.holdRequired) {
           this.resetHoldState();
           this.commitAnswer(key);
@@ -1339,7 +1341,6 @@
         });
       }
 
-      /* Sentuh Layar Langsung Kunci Seketika */
       handleDirectSelect(key) {
         if (this.isProcessingAnswer || this.isPaused) return;
         this.resetHoldState();
@@ -1385,7 +1386,7 @@
           } else {
             this.finishGame();
           }
-        }, 2000);
+        }, 1600);
       }
 
       startGame() {
@@ -1427,7 +1428,6 @@
             </div>
             <div class="fill-meter"></div>
           `;
-          // Layar sentuh / Touchscreen langsung aktif
           card.addEventListener('pointerdown', () => {
             if (!this.isProcessingAnswer && !this.isPaused) this.handleDirectSelect(ch.key);
           });
@@ -1490,7 +1490,7 @@
         else fb.classList.remove('wrong');
 
         fb.classList.add('show');
-        setTimeout(() => fb.classList.remove('show'), 1600);
+        setTimeout(() => fb.classList.remove('show'), 1400);
       }
 
       setNumiSpeech(text) {
