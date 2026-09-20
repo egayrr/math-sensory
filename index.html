@@ -243,7 +243,7 @@
       padding: 2px 10px;
     }
 
-    /* Quiz Area */
+    /* Papan Soal */
     #quiz-board {
       position: absolute;
       top: 120px;
@@ -699,7 +699,7 @@
     <div id="lock-hud-pill">
       <span class="lock-pill-txt">Mengunci:</span>
       <span class="lock-pill-badge" id="lock-pill-letter">A</span>
-      <span style="font-family:'Lilita One'; font-size:18px; color:var(--gold);" id="lock-pill-countdown">(1.0s)</span>
+      <span style="font-family:'Lilita One'; font-size:18px; color:var(--gold);" id="lock-pill-countdown">(1.6s)</span>
     </div>
 
     <!-- Papan Soal -->
@@ -707,7 +707,7 @@
       <div class="q-box">
         <div class="q-badge" id="q-topic">MEMBACA & MENULIS BILANGAN CACAH</div>
         <div class="q-main" id="q-text">Bilangan yang dibaca "tiga puluh lima ribu dua ratus delapan" adalah ....</div>
-        <div class="q-desc" id="q-sub">Pemain terdepan: Berdirilah di garis tengah (1,5 - 2m dari IFP) dan pilih jawabanmu!</div>
+        <div class="q-desc" id="q-sub">Angkat tangan tinggi melewati kepala untuk memilih A atau B!</div>
       </div>
 
       <div class="choices-grid-4" id="choices-box"></div>
@@ -723,7 +723,7 @@
     <div id="numi-bar">
       <div class="numi-avatar">🤖</div>
       <div style="font-size:15px; font-weight:600; color:#E2F1FF; line-height:1.3;" id="numi-speech">
-        “Hanya pemain paling depan yang dikunci sensor ya! Teman lain bisa menyemangati dari bangku.”
+        “Angkat tanganmu tinggi sampai melewati hidung untuk mengunci jawaban ya!”
       </div>
     </div>
 
@@ -740,7 +740,7 @@
         <h1 class="main-logo">NUMBER BLOCKS<br>ADVENTURE</h1>
         <div class="main-sub">EDISI KHUSUS LAYAR BESAR (IFP)</div>
         <p style="font-size: 17px; color: #c4d7ff; margin-bottom: 22px; line-height: 1.5;">
-          Sistem otomatis mengunci <strong>1 siswa yang berdiri paling depan</strong>. Siswa lain yang duduk di belakang tidak akan mengganggu sensor.
+          Gunakan gerakan tubuh! Angkat tangan tinggi-tinggi atau condongkan tubuh ke samping untuk memilih balok jawaban yang benar.
         </p>
         <div class="btn-column">
           <button class="btn-roblox yellow" id="btn-play-motion">🎮 MULAI SENSOR GERAK IFP</button>
@@ -755,7 +755,7 @@
         <h1 class="main-logo" style="color:var(--gold);">NUMBER BLOCKS ADVENTURE</h1>
         <div class="main-sub">PERMAINAN DIJEDA • GILIRAN GANTI SISWA</div>
         <p style="font-size: 17px; color: #c4d7ff; margin-bottom: 24px; line-height: 1.5;">
-          Silakan siswa berikutnya maju ke depan (jarak 1,5 – 2 meter dari layar). Tekan tombol di bawah untuk mengunci pemain baru!
+          Silakan siswa berikutnya maju ke depan. Tekan tombol di bawah untuk mengunci pemain baru!
         </p>
         <div class="btn-column">
           <button class="btn-roblox green" id="btn-resume-player">✅ PEMAIN BARU SUDAH SIAP!</button>
@@ -796,7 +796,7 @@
       {
         topic: "MEMBACA & MENULIS BILANGAN CACAH",
         question: "Bilangan yang dibaca \"tiga puluh lima ribu dua ratus delapan\" adalah ....",
-        sub: "Angkat tangan kiri ke atas untuk A, tangan kanan ke atas untuk B!",
+        sub: "Angkat tangan kiri tinggi untuk A, tangan kanan tinggi untuk B!",
         choices: [
           { key: "A", text: "35.280", hint: "🙋 Tangan Kiri Atas" },
           { key: "B", text: "35.208", hint: "🙋‍♂️ Tangan Kanan Atas" },
@@ -1053,7 +1053,7 @@
     }
 
     /* =========================================================
-       4. GAME ENGINE & ADAPTIVE SENSOR UNTUK IFP RUANG KELAS
+       4. GAME ENGINE & DETEKSI POSE DENGAN DEADZONE
        ========================================================= */
     class GameEngine {
       constructor() {
@@ -1068,8 +1068,8 @@
         this.timerInterval = null;
         this.isPaused = false;
 
-        this.holdRequired = 1.0;
-        this.tiltSens = 0.038;
+        // Waktu tahan 1.6 detik agar tidak mudah terkunci otomatis
+        this.holdRequired = 1.6;
 
         this.currentHoldingKey = null;
         this.holdProgress = 0;
@@ -1175,7 +1175,7 @@
 
       initMediaPipe() {
         const camTag = document.getElementById('cam-status');
-        camTag.textContent = 'Memuat Sensor IFP...';
+        camTag.textContent = 'Memuat Sensor AI...';
 
         if (typeof Pose === 'undefined') {
           camTag.textContent = 'Gunakan Touchscreen';
@@ -1190,8 +1190,8 @@
           modelComplexity: 0,
           smoothLandmarks: true,
           enableSegmentation: false,
-          minDetectionConfidence: 0.35,
-          minTrackingConfidence: 0.35
+          minDetectionConfidence: 0.45,
+          minTrackingConfidence: 0.45
         });
 
         this.pose.onResults((results) => this.onPoseResults(results));
@@ -1236,26 +1236,14 @@
           return;
         }
 
-        const shoulderSpan = Math.hypot(leftShoulder.x - rightShoulder.x, leftShoulder.y - rightShoulder.y);
-        if (shoulderSpan < 0.15) {
-          const tag = document.getElementById('cam-status');
-          tag.textContent = 'Maju mendekat (1,5m)';
-          this.updateHoldProgress(null);
-          return;
-        }
-
-        document.getElementById('cam-status').textContent = 'Pemain Terkunci 🎯';
         this.drawSkeletonPIP(lm);
 
-        const shoulderMidY = (leftShoulder.y + rightShoulder.y) / 2;
+        // 1. ANGKAT TANGAN: Pergelangan tangan harus naik tinggi melewati hidung
+        const isLeftUp = (leftWrist && leftWrist.y < nose.y - 0.03 && leftWrist.visibility > 0.45);
+        const isRightUp = (rightWrist && rightWrist.y < nose.y - 0.03 && rightWrist.visibility > 0.45);
+
+        // 2. CONDONG BADAN: Memakai deadzone yang jelas agar posisi santai tidak terdeteksi
         const shoulderMidX = (leftShoulder.x + rightShoulder.x) / 2;
-        const headHeight = Math.abs(shoulderMidY - nose.y);
-        
-        const triggerY = shoulderMidY - (headHeight * 0.4);
-
-        const isLeftUp = (leftWrist && leftWrist.y < triggerY && leftWrist.visibility > 0.35);
-        const isRightUp = (rightWrist && rightWrist.y < triggerY && rightWrist.visibility > 0.35);
-
         const tiltX = nose.x - shoulderMidX;
 
         let rawKey = null;
@@ -1263,21 +1251,24 @@
           rawKey = 'A';
         } else if (isRightUp && !isLeftUp) {
           rawKey = 'B';
-        } else if (tiltX > this.tiltSens) {
-          rawKey = 'C';
-        } else if (tiltX < -this.tiltSens) {
-          rawKey = 'D';
+        } else if (tiltX > 0.075) {
+          rawKey = 'C'; // Miring jelas ke kiri
+        } else if (tiltX < -0.075) {
+          rawKey = 'D'; // Miring jelas ke kanan
         }
 
-        if (rawKey === this.smoothedKey) {
+        // 3. Harus stabil selama 4 frame sebelum mulai mengisi meter penguncian
+        if (rawKey && rawKey === this.smoothedKey) {
           this.consecutiveFrames++;
         } else {
           this.smoothedKey = rawKey;
-          this.consecutiveFrames = 1;
+          this.consecutiveFrames = 0;
         }
 
-        if (this.consecutiveFrames >= 3) {
+        if (this.consecutiveFrames >= 4) {
           this.updateHoldProgress(this.smoothedKey);
+        } else if (!rawKey) {
+          this.updateHoldProgress(null);
         }
       }
 
@@ -1291,7 +1282,7 @@
           const pt = landmarks[idx];
           if (pt && pt.visibility > 0.4) {
             ctx.beginPath();
-            ctx.arc(pt.x * w, pt.y * h, 6, 0, Math.PI * 2);
+            ctx.arc(pt.x * w, pt.y * h, 5, 0, Math.PI * 2);
             ctx.fill();
           }
         });
@@ -1300,7 +1291,7 @@
         const rS = landmarks[12];
         if (lS && rS) {
           ctx.strokeStyle = '#00FF88';
-          ctx.lineWidth = 3;
+          ctx.lineWidth = 2;
           ctx.beginPath();
           ctx.moveTo(lS.x * w, lS.y * h);
           ctx.lineTo(rS.x * w, rS.y * h);
@@ -1327,7 +1318,8 @@
           this.world.updateAvatarPos(key);
         }
 
-        this.holdProgress += 0.04;
+        // Tambah progres penahanan
+        this.holdProgress += 0.033;
         const ratio = Math.min(this.holdProgress / this.holdRequired, 1.0);
 
         this.updateMeters(key, ratio);
